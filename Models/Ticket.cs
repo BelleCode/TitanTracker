@@ -45,10 +45,10 @@ namespace TitanTracker.Models
         public int TicketStatusId { get; set; }
 
         [DisplayName("Ticket Owner")]
-        public int OwnerUserId { get; set; }
+        public string OwnerUserId { get; set; }
 
         [DisplayName("Ticket Developer")]
-        public int DeveloperUserId { get; set; }
+        public string DeveloperUserId { get; set; }
 
         //=== Navigation Properties ==//
 

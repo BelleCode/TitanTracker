@@ -32,7 +32,8 @@ namespace TitanTracker
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -41,6 +42,7 @@ namespace TitanTracker
 
             //Custom Services
             services.AddScoped<IBTRolesService, BTRolesService>();
+            services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

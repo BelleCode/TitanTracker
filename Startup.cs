@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TitanTracker.Data;
 using TitanTracker.Models;
+using TitanTracker.Services;
+using TitanTracker.Services.Interfaces;
 
 namespace TitanTracker
 {
@@ -36,6 +38,9 @@ namespace TitanTracker
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultUI().AddDefaultTokenProviders();
             services.AddControllersWithViews();
+
+            //Custom Services
+            services.AddScoped<IBTRolesService, BTRolesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

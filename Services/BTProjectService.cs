@@ -4,14 +4,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using TitanTracker.Services.Interfaces;
 using TitanTracker.Models;
+using TitanTracker.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TitanTracker.Services
 {
     public class BTProjectService : IBTProjectService
     {
-        public Task AddNewProjectAsync(Project project)
+        private readonly ApplicationDbContext _context;
+        private readonly IBTRolesService _rolesService;
+
+        public BTProjectService(ApplicationDbContext context, IBTRolesService rolesService)
         {
-            throw new NotImplementedException();
+            _context = context;
+            _rolesService = rolesService;
+        }
+
+        // CRUD : Create
+        public async Task AddNewProjectAsync(Project project)
+        {
+            try
+            {
+                await _context.AddAsync(project);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<bool> AddProjectManagerAsync(string userId, int projectId)
@@ -24,9 +44,18 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task ArchiveProjectAsync(Project project)
+        //CRUD: Delete
+        public async Task ArchiveProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            try
+            {
+                project.Archived = true;
+                await UpdateProjectAsync(project);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
@@ -54,9 +83,22 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<Project> GetProjectByIdAsync(int projectId, int companyId)
+        // CRUD: Read
+        public async Task<Project> GetProjectByIdAsync(int projectId, int companyId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await _context.Projects
+                                                .Include(p => p.Tickets)
+                                                .Include(p => p.Members)
+                                                .Include(p => p.ProjectPriority)
+                                                .FirstOrDefaultAsync(p => p.Id == projectId && p.CompanyId == companyId);
+                return project;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<BTUser> GetProjectManagerAsync(int projectId)
@@ -109,9 +151,18 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateProjectAsync(Project project)
+        // CRUD : Update
+        public async Task UpdateProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Update(project);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

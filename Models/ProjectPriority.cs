@@ -11,6 +11,6 @@ namespace TitanTracker.Models
         public int Id { get; set; }
 
         [DisplayName("Priority Name")]
-        public string Priority { get; set; }
+        public string Name { get; set; }
     }
 }

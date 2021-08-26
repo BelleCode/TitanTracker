@@ -39,9 +39,44 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> AddUserToProjectAsync(string userId, int projectId)
+        public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // find the project
+                Project project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+                // Add a user to a project
+                BTUser user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (user != null)// is user already on project
+                {
+                    if (!await IsUserOnProject(userId, projectId)) // if user is NOT on project, let's add
+                    {
+                        try
+                        {
+                            project.Members.Add(user);
+                            await UpdateProjectAsync(project);
+                            return true;
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         //CRUD: Delete
@@ -116,9 +151,40 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Project>> GetUserProjectsAsync(string userId)
+        public async Task<List<Project>> GetUserProjectsAsync(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Project> userProjects = (await _context.Users
+                                                            .Include(u => u.Projects)
+                                                                .ThenInclude(p => p.Company)
+                                                            .Include(u => u.Projects)
+                                                                .ThenInclude(p => p.Members)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(p => p.Tickets)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(t => t.Tickets)
+                                                                    .ThenInclude(t => t.DeveloperUser)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(t => t.Tickets)
+                                                                    .ThenInclude(t => t.OwnerUser)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(t => t.Tickets)
+                                                                    .ThenInclude(t => t.TicketPriority)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(t => t.Tickets)
+                                                                    .ThenInclude(t => t.TicketStatus)
+                                                           .Include(u => u.Projects)
+                                                                .ThenInclude(t => t.Tickets)
+                                                                    .ThenInclude(t => t.TicketType)
+                                                                    .FirstOrDefaultAsync(u => u.Id == userId)).Projects.ToList();
+                return userProjects;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*** ERROR *** - Error Getting user projects list. --> {ex.Message}");
+                throw;
+            }
         }
 
         public Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
@@ -126,9 +192,24 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> IsUserOnProject(string userId, int projectId)
+        public async Task<bool> IsUserOnProject(string userId, int projectId) // Test
         {
-            throw new NotImplementedException();
+            // find the project in order to get the members
+            try
+            {
+                Project project = await _context.Projects.Include(p => p).FirstOrDefaultAsync(p => p.Id == projectId);
+                bool result = false;
+
+                if (project != null)
+                {
+                    result = project.Members.Any(m => m.Id == userId);
+                }
+                return result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<int> LookupProjectPriorityId(string priorityName)

@@ -6,6 +6,7 @@ using TitanTracker.Services.Interfaces;
 using TitanTracker.Models;
 using TitanTracker.Data;
 using Microsoft.EntityFrameworkCore;
+using TitanTracker.Models.Enums;
 
 namespace TitanTracker.Services
 {
@@ -34,9 +35,37 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task<bool> AddProjectManagerAsync(string userId, int projectId)
+        public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {// is there a PM to be removed?
+                BTUser currentPM = await GetProjectManagerAsync(projectId);
+
+                if (currentPM != null)
+                {
+                    try
+                    {
+                        await RemoveProjectManagerAsync(projectId);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                try
+                {
+                    await AddUserToProjectAsync(userId, projectId);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> AddUserToProjectAsync(string userId, int projectId)
@@ -93,9 +122,22 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
+        public async Task<List<BTUser>> GetAllProjectMembersExceptPMAsync(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<BTUser> developers = await GetProjectMembersByRoleAsync(projectId, Roles.Developer.ToString());
+                List<BTUser> submitters = await GetProjectMembersByRoleAsync(projectId, Roles.Submitter.ToString());
+                List<BTUser> admins = await GetProjectMembersByRoleAsync(projectId, Roles.Admin.ToString());
+
+                List<BTUser> members = developers.Concat(submitters).Concat(admins).ToList();
+
+                return members;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<List<Project>> GetAllProjectsByCompany(int companyId)
@@ -208,16 +250,36 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task<BTUser> GetProjectManagerAsync(int projectId)
+        public async Task<BTUser> GetProjectManagerAsync(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await _context.Projects
+                                                .Include(p => p.Members)
+                                                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+                foreach (BTUser member in project.Members)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(member, Roles.ProjectManager.ToString()))
+                    {
+                        return member;
+                    }
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
             try
             {
-                Project project = await _context.Projects.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
+                Project project = await _context.Projects
+                                                .Include(p => p.Members)
+                                                .FirstOrDefaultAsync(p => p.Id == projectId);
 
                 List<BTUser> members = new();
 
@@ -278,9 +340,17 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
+        public async Task<List<BTUser>> GetUsersNotOnProjectAsync(int projectId, int companyId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<BTUser> users = await _context.Users.Where(u => u.Projects.All(p => p.Id != projectId)).ToListAsync();
+                return users.Where(u => u.CompanyId == companyId).ToList(); ;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<bool> IsUserOnProject(string userId, int projectId) // Test
@@ -317,9 +387,33 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task RemoveProjectManagerAsync(int projectId)
+        public async Task RemoveProjectManagerAsync(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await _context.Projects
+                                                .Include(p => p.Members)
+                                                .FirstOrDefaultAsync();
+
+                try
+                {
+                    foreach (BTUser member in project.Members)
+                    {
+                        if (await _rolesService.IsUserInRoleAsync(member, Roles.ProjectManager.ToString()))
+                        {
+                            await RemoveUsersFromProjectByRoleAsync(member.Id, projectId);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task RemoveUserFromProjectAsync(string userId, int projectId)
@@ -338,7 +432,6 @@ namespace TitanTracker.Services
                     }
                     else
                     {
-                        throw;
                     }
                 }
                 catch (Exception)

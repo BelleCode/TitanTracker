@@ -141,9 +141,28 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
+        public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await _context.Projects.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
+
+                List<BTUser> members = new();
+
+                foreach (BTUser user in project.Members)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(user, role))
+                    {
+                        members.Add(user);
+                    }
+                }
+
+                return members;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<List<BTUser>> GetSubmittersOnProjectAsync(int projectId)
@@ -222,14 +241,62 @@ namespace TitanTracker.Services
             throw new NotImplementedException();
         }
 
-        public Task RemoveUserFromProjectAsync(string userId, int projectId)
+        public async Task RemoveUserFromProjectAsync(string userId, int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                BTUser user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                Project project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+
+                try
+                {
+                    if (await IsUserOnProject(userId, projectId)) // If user is on the project
+                    {
+                        project.Members.Remove(user);
+                        await UpdateProjectAsync(project);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*** ERROR *** - Error Getting user projects list. --> {ex.Message}");
+                throw;
+            }
         }
 
-        public Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
+        public async Task RemoveUsersFromProjectByRoleAsync(string role, int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<BTUser> members = await GetProjectMembersByRoleAsync(projectId, role);
+                Project project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+
+                foreach (BTUser bTUser in members)
+                {
+                    try
+                    {
+                        project.Members.Remove(bTUser);
+                        await UpdateProjectAsync(project);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"*** ERROR *** - Error Getting user projects list. --> {ex.Message}");
+                throw;
+            }
         }
 
         // CRUD : Update

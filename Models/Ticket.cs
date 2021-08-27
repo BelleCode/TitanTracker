@@ -33,7 +33,7 @@ namespace TitanTracker.Models
         public bool Archived { get; set; }
 
         [DisplayName("Project")]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
         [DisplayName("Ticket Type")]
         public int TicketTypeId { get; set; }

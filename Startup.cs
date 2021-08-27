@@ -44,6 +44,7 @@ namespace TitanTracker
             services.AddScoped<IBTRolesService, BTRolesService>();
             services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
             services.AddScoped<IBTProjectService, BTProjectService>();
+            services.AddScoped<IBTTicketService, BTTicketService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

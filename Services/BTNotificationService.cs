@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Data;
 using TitanTracker.Models;
 using TitanTracker.Services.Interfaces;
 
@@ -9,19 +12,64 @@ namespace TitanTracker.Services
 {
     public class BTNotificationService : IBTNotificationService
     {
-        public Task AddNotificationAsync(Notification notification)
+        private readonly ApplicationDbContext _context;
+        private readonly IBTRolesService _rolesService;
+        private readonly IEmailSender _emailSender;
+
+        public BTNotificationService(ApplicationDbContext context, IBTRolesService rolesService, IEmailSender emailSender)
         {
-            throw new NotImplementedException();
+            _context = context;
+            _rolesService = rolesService;
+            _emailSender = emailSender;
         }
 
-        public Task<List<Notification>> GetReceivedNotificationsAsync(string userId)
+        public async Task AddNotificationAsync(Notification notification)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _context.AddAsync(notification);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<List<Notification>> GetSentNotificationsAsync(string userId)
+        public async Task<List<Notification>> GetReceivedNotificationsAsync(string userId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<Notification> notifications = await _context.Notifications.Include(n => n.Recipient)
+                                                                               .Include(n => n.Sender)
+                                                                               .Include(n => n.Ticket)
+                                                                                    .ThenInclude(t => t.Project)
+                                                                               .Where(n => n.RecipientId == userId)
+                                                                               .ToListAsync();
+                return notifications;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Notification>> GetSentNotificationsAsync(string userId)
+        {
+            try
+            {
+                List<Notification> notifications = await _context.Notifications.Include(n => n.Recipient)
+                                                                               .Include(n => n.Sender)
+                                                                               .Include(n => n.Ticket)
+                                                                                    .ThenInclude(t => t.Project)
+                                                                               .Where(n => n.SenderId == userId)
+                                                                               .ToListAsync();
+                return notifications;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public Task<bool> SendEmailNotificationAsync(Notification notification, string emailSubject)

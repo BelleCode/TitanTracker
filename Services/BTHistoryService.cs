@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Data;
 using TitanTracker.Models;
 using TitanTracker.Services.Interfaces;
 
@@ -9,7 +10,14 @@ namespace TitanTracker.Services
 {
     public class BTHistoryService : IBTHistoryService
     {
-        public Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string userId)
+        private readonly ApplicationDbContext _context;
+
+        public BTHistoryService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string userId)
         {
             throw new NotImplementedException();
         }

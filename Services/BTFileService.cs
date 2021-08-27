@@ -1,32 +1,71 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Data;
 using TitanTracker.Services.Interfaces;
 
 namespace TitanTracker.Services
 {
     public class BTFileService : IBTFileService
     {
+        private readonly string[] suffixes = { "Bytes", "KB", "MB", "GB", "TB", "PB" };
+
         public string ConvertByteArrayToFile(byte[] fileData, string extension)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string imageBase64Data = Convert.ToBase64String(fileData);
+                return string.Format($"data:{extension};base64,{imageBase64Data}");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
+        public async Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
         {
-            throw new NotImplementedException();
+            try
+            {
+                MemoryStream memoryStream = new();
+                await file.CopyToAsync(memoryStream);
+                byte[] byteFile = memoryStream.ToArray();
+                memoryStream.Close();
+                memoryStream.Dispose();
+
+                return byteFile;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public string FormatFileSize(long bytes)
         {
-            throw new NotImplementedException();
+            int counter = 0;
+            decimal fileSize = bytes;
+            while (Math.Round(fileSize / 1024) >= 1)
+            {
+                fileSize /= bytes;
+                counter++;
+            }
+            return string.Format("{0:n1}{1}", fileSize, suffixes[counter]);
         }
 
         public string GetFileIcon(string file)
         {
-            throw new NotImplementedException();
+            string fileImage = "default";
+
+            if (!string.IsNullOrWhiteSpace(file))
+            {
+                fileImage = Path.GetExtension(file).Replace(".", "");
+                return $"/img/png/{fileImage}.png";
+            }
+            return fileImage;
         }
     }
 }

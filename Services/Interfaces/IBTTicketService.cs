@@ -17,6 +17,7 @@ namespace TitanTracker.Services.Interfaces
 
         public Task ArchiveTicketAsync(Ticket ticket);
 
+        // Essential Services
         public Task AssignTicketAsync(int ticketId, string userId);
 
         public Task<List<Ticket>> GetArchivedTicketsAsync(int companyId);
@@ -29,7 +30,8 @@ namespace TitanTracker.Services.Interfaces
 
         public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName);
 
-        public Task<BTUser> GetTicketDeveloperAsync(int ticketId);
+        // Get tickets by Role
+        public Task<BTUser> GetTicketDeveloperAsync(int ticketId, int companyId);
 
         public Task<List<Ticket>> GetTicketsByRoleAsync(string role, string userId, int companyId);
 
@@ -37,12 +39,14 @@ namespace TitanTracker.Services.Interfaces
 
         public Task<List<Ticket>> GetProjectTicketsByRoleAsync(string role, string userId, int projectId, int companyId);
 
+        // Status Priority and Type
         public Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId);
 
         public Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId);
 
         public Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId);
 
+        // Lookup Services
         public Task<int?> LookupTicketPriorityIdAsync(string priorityName);
 
         public Task<int?> LookupTicketStatusIdAsync(string statusName);

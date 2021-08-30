@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using TitanTracker.Data;
 using TitanTracker.Models;
 using TitanTracker.Services;
+using TitanTracker.Services.Factories;
 using TitanTracker.Services.Interfaces;
 
 namespace TitanTracker
@@ -38,7 +39,9 @@ namespace TitanTracker
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultUI().AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddClaimsPrincipalFactory<BTUserClaimsPrincipalFactory>()
+                .AddDefaultUI().AddDefaultTokenProviders();
             services.AddControllersWithViews();
 
             //Custom Services

@@ -10,8 +10,8 @@ using TitanTracker.Data;
 namespace TitanTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210825140849_001_TitanTracker")]
-    partial class _001_TitanTracker
+    [Migration("20210830221401_001_initial")]
+    partial class _001_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -440,7 +440,7 @@ namespace TitanTracker.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Priority")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -458,6 +458,9 @@ namespace TitanTracker.Data.Migrations
                     b.Property<bool>("Archived")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -468,10 +471,7 @@ namespace TitanTracker.Data.Migrations
                     b.Property<string>("OwnerUserId")
                         .HasColumnType("text");
 
-                    b.Property<string>("ProjectId")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ProjectId1")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TicketPriorityId")
@@ -491,16 +491,13 @@ namespace TitanTracker.Data.Migrations
                     b.Property<DateTimeOffset?>("Updated")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("created")
-                        .HasColumnType("timestamp with time zone");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DeveloperUserId");
 
                     b.HasIndex("OwnerUserId");
 
-                    b.HasIndex("ProjectId1");
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("TicketPriorityId");
 
@@ -643,7 +640,7 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketStatus");
+                    b.ToTable("TicketStatuses");
                 });
 
             modelBuilder.Entity("TitanTracker.Models.TicketType", b =>
@@ -658,7 +655,7 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TicketType");
+                    b.ToTable("TicketTypes");
                 });
 
             modelBuilder.Entity("BTUserProject", b =>
@@ -817,7 +814,9 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasOne("TitanTracker.Models.Project", "Project")
                         .WithMany("Tickets")
-                        .HasForeignKey("ProjectId1");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TitanTracker.Models.TicketPriority", "TicketPriority")
                         .WithMany()

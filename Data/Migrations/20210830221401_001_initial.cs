@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TitanTracker.Data.Migrations
 {
-    public partial class _001_TitanTracker : Migration
+    public partial class _001_initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,7 +45,7 @@ namespace TitanTracker.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Priority = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,7 +66,7 @@ namespace TitanTracker.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TicketStatus",
+                name: "TicketStatuses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -75,11 +75,11 @@ namespace TitanTracker.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketStatus", x => x.Id);
+                    table.PrimaryKey("PK_TicketStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TicketType",
+                name: "TicketTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -88,7 +88,7 @@ namespace TitanTracker.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TicketType", x => x.Id);
+                    table.PrimaryKey("PK_TicketTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -348,16 +348,15 @@ namespace TitanTracker.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     Archived = table.Column<bool>(type: "boolean", nullable: false),
-                    ProjectId = table.Column<string>(type: "text", nullable: true),
+                    ProjectId = table.Column<int>(type: "integer", nullable: false),
                     TicketTypeId = table.Column<int>(type: "integer", nullable: false),
                     TicketPriorityId = table.Column<int>(type: "integer", nullable: false),
                     TicketStatusId = table.Column<int>(type: "integer", nullable: false),
                     OwnerUserId = table.Column<string>(type: "text", nullable: true),
-                    DeveloperUserId = table.Column<string>(type: "text", nullable: true),
-                    ProjectId1 = table.Column<int>(type: "integer", nullable: true)
+                    DeveloperUserId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -375,11 +374,11 @@ namespace TitanTracker.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Tickets_Projects_ProjectId1",
-                        column: x => x.ProjectId1,
+                        name: "FK_Tickets_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Tickets_TicketPriorities_TicketPriorityId",
                         column: x => x.TicketPriorityId,
@@ -387,15 +386,15 @@ namespace TitanTracker.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tickets_TicketStatus_TicketStatusId",
+                        name: "FK_Tickets_TicketStatuses_TicketStatusId",
                         column: x => x.TicketStatusId,
-                        principalTable: "TicketStatus",
+                        principalTable: "TicketStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tickets_TicketType_TicketTypeId",
+                        name: "FK_Tickets_TicketTypes_TicketTypeId",
                         column: x => x.TicketTypeId,
-                        principalTable: "TicketType",
+                        principalTable: "TicketTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -661,9 +660,9 @@ namespace TitanTracker.Data.Migrations
                 column: "OwnerUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tickets_ProjectId1",
+                name: "IX_Tickets_ProjectId",
                 table: "Tickets",
-                column: "ProjectId1");
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_TicketPriorityId",
@@ -732,10 +731,10 @@ namespace TitanTracker.Data.Migrations
                 name: "TicketPriorities");
 
             migrationBuilder.DropTable(
-                name: "TicketStatus");
+                name: "TicketStatuses");
 
             migrationBuilder.DropTable(
-                name: "TicketType");
+                name: "TicketTypes");
 
             migrationBuilder.DropTable(
                 name: "Companies");

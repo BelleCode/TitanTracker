@@ -34,7 +34,7 @@ namespace TitanTracker
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection"),
+                    DataUtility.GetConnectionString(Configuration),
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
             services.AddDatabaseDeveloperPageExceptionFilter();
 

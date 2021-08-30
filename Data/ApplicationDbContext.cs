@@ -24,7 +24,7 @@ namespace TitanTracker.Data
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }
         public DbSet<TicketHistory> TicketHistories { get; set; }
-        public DbSet<TicketStatus> TicketStatus { get; set; }
-        public DbSet<TicketType> TicketType { get; set; }
+        public DbSet<TicketStatus> TicketStatuses { get; set; }
+        public DbSet<TicketType> TicketTypes { get; set; }
     }
 }

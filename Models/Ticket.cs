@@ -23,7 +23,7 @@ namespace TitanTracker.Models
 
         [DataType(DataType.Date)]
         [DisplayName("Created")]
-        public DateTimeOffset created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayName("Updated")]

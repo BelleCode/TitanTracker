@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using TitanTracker.Extensions
 @inject SignInManager<BTUser> SignInManager
 @inject UserManager<BTUser> UserManager
 
@@ -8,6 +9,9 @@
         BTUser btUser = await UserManager.GetUserAsync(User);
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @btUser.FullName!</a>
+        </li>
+        <li class="nav-item">
+            <div>Company Id: @User.Identity.GetCompanyId()</div>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

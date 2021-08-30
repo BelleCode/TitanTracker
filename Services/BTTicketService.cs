@@ -416,7 +416,7 @@ namespace TitanTracker.Services
         {
             try
             {
-                TicketStatus status = await _context.TicketStatus.FirstOrDefaultAsync(t => t.Name == statusName);
+                TicketStatus status = await _context.TicketStatuses.FirstOrDefaultAsync(t => t.Name == statusName);
 
                 return status.Id;
             }
@@ -428,7 +428,7 @@ namespace TitanTracker.Services
 
         public async Task<int?> LookupTicketTypeIdAsync(string typeName)
         {
-            TicketType ticketType = await _context.TicketType.FirstOrDefaultAsync(p => p.Name == typeName);
+            TicketType ticketType = await _context.TicketTypes.FirstOrDefaultAsync(p => p.Name == typeName);
 
             return ticketType.Id;
         }

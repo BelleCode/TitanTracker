@@ -72,19 +72,64 @@ namespace TitanTracker.Services
             }
         }
 
-        public Task<bool> SendEmailNotificationAsync(Notification notification, string emailSubject)
+        public async Task<bool> SendEmailNotificationAsync(Notification notification, string emailSubject)
         {
-            throw new NotImplementedException();
+            try
+            {
+                BTUser btUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == notification.RecipientId);
+
+                string btUserEmail = btUser.Email;
+                string message = notification.Message;
+
+                //send email
+                try
+                {
+                    await _emailSender.SendEmailAsync(btUserEmail, emailSubject, message);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task SendEmailNotificationsByRoleAsync(Notification notification, int companyId, string role)
+        public async Task SendEmailNotificationsByRoleAsync(Notification notification, int companyId, string role)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<BTUser> members = await _rolesService.GetUsersInRoleAsync(role, companyId);
+
+                foreach (BTUser btUser in members)
+                {
+                    notification.RecipientId = btUser.Id;
+                    await SendEmailNotificationAsync(notification, notification.Title); // return is in the other method
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task SendMembersEmailNotificationsAsync(Notification notification, List<BTUser> members)
+        public async Task SendMembersEmailNotificationsAsync(Notification notification, List<BTUser> members)
         {
-            throw new NotImplementedException();
+            try
+            {
+                foreach (BTUser btUser in members)
+                {
+                    notification.RecipientId = btUser.Id;
+                    await SendEmailNotificationAsync(notification, notification.Title); // return is in the other method
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

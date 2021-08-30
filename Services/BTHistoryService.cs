@@ -17,7 +17,7 @@ namespace TitanTracker.Services
             _context = context;
         }
 
-        public async Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string userId)
+        public Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string userId)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,13 +41,38 @@ namespace TitanTracker.Controllers
         {
             List<ManageUserRolesViewModel> model = new();
             List<BTUser> users = await _companyInfoService.GetAllMembersAsync(_companyId);
-            return View();
+
+            foreach (BTUser user in users)
+            {
+                ManageUserRolesViewModel viewModel = new();
+
+                viewModel.BTUser = user;
+                var selectedRoles = await _rolesService.GetUsersRoleAsync(user);
+                viewModel.Roles = new MultiSelectList(await _rolesService.GetRolesAsync(), "Name", "Name", selectedRoles);
+                model.Add(viewModel);
+            }
+            return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken] //comes from submitted data
         public async Task<IActionResult> ManageUserRoles(ManageUserRolesViewModel member)
         {
-            return View();
+            BTUser user = (await _companyInfoService.GetAllMembersAsync(_companyId)).FirstOrDefault(u => u.Id == member.BTUser.Id);
+
+            IEnumerable<string> roles = await _rolesService.GetUsersRoleAsync(user);
+
+            await _rolesService.RemoveUserFromRolesAsync(user, roles);
+
+            string userRole = member.SelectedRoles.FirstOrDefault();
+
+            if (string.IsNullOrEmpty(userRole))
+            {
+                // ToDo: Sweet alert here....
+                await _rolesService.AddUserToRoleAsync(user, userRole);
+            }
+
+            return RedirectToAction("ManageUserRoles");
         }
     }
 }

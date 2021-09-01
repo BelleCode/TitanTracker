@@ -42,6 +42,7 @@ namespace TitanTracker
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddClaimsPrincipalFactory<BTUserClaimsPrincipalFactory>()
                 .AddDefaultUI().AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
 
             //Custom Services
@@ -49,8 +50,10 @@ namespace TitanTracker
             services.AddScoped<IBTCompanyInfoService, BTCompanyInfoService>();
             services.AddScoped<IBTProjectService, BTProjectService>();
             services.AddScoped<IBTTicketService, BTTicketService>();
+            services.AddScoped<IBTInviteService, BTInviteService>();
             services.AddScoped<IBTNotificationService, BTNotificationService>();
             services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
+            services.AddScoped<IBTFileService, BTFileService>();
 
             services.AddScoped<IEmailSender, BTEmailService>();
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));

@@ -243,8 +243,8 @@
                             <img src="img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="img/!logged-user.jpg" />
                         </figure>
                         <div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
-                            <span class="name">@btUser.FullName</span>
-                            <span class="role">Adminstrator</span>
+                            <span class="name">@btUser.PreferredName</span>
+                            @*<span class="role">Adminstrator</span>*@
                             @{
                                 @foreach (var role in await UserManager.GetRolesAsync(btUser))
                                 {

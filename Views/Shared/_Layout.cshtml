@@ -47,9 +47,8 @@
     <script src="/vendor/modernizr/modernizr.js"></script>
 </head>
 <body>
-    <partial name="_LogoutPartial" />
-
     <section class="body">
+        <partial name="_LogoutPartial" />
 
         <!-- start: header -->
         <header class="header">
@@ -245,6 +244,7 @@
                         </figure>
                         <div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
                             <span class="name">@btUser.FullName</span>
+                            <span class="role">Adminstrator</span>
                             @{
                                 @foreach (var role in await UserManager.GetRolesAsync(btUser))
                                 {
@@ -266,7 +266,7 @@
                                 <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
                             </li>
                             <li>
-                                <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutform').submit();"><i class="bx bx-power-off"></i> Logout</a>
+                                <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Logout</a>
                             </li>
                         </ul>
                     </div>

@@ -1,4 +1,10 @@
-﻿<!doctype html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<BTUser> UserManager
+
+@{
+    BTUser btUser = await UserManager.GetUserAsync(User);
+}
+<!doctype html>
 <html class="fixed dark">
 <head>
 
@@ -41,6 +47,8 @@
     <script src="/vendor/modernizr/modernizr.js"></script>
 </head>
 <body>
+    <partial name="_LogoutPartial" />
+
     <section class="body">
 
         <!-- start: header -->
@@ -235,9 +243,14 @@
                         <figure class="profile-picture">
                             <img src="img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="img/!logged-user.jpg" />
                         </figure>
-                        <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@okler.com">
-                            <span class="name">John Doe Junior</span>
-                            <span class="role">Administrator</span>
+                        <div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
+                            <span class="name">@btUser.FullName</span>
+                            @{
+                                @foreach (var role in await UserManager.GetRolesAsync(btUser))
+                                {
+                                    <span class="role">@role</span>
+                                }
+                            }
                         </div>
 
                         <i class="fa custom-caret"></i>
@@ -253,7 +266,7 @@
                                 <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
                             </li>
                             <li>
-                                <a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="bx bx-power-off"></i> Logout</a>
+                                <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutform').submit();"><i class="bx bx-power-off"></i> Logout</a>
                             </li>
                         </ul>
                     </div>

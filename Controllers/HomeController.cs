@@ -5,17 +5,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Extensions;
 using TitanTracker.Models;
+using TitanTracker.Services.Interfaces;
 
 namespace TitanTracker.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IBTProjectService _projectService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IBTProjectService projectService)
         {
             _logger = logger;
+            _projectService = projectService;
         }
 
         public IActionResult Index()
@@ -28,9 +32,15 @@ namespace TitanTracker.Controllers
             return View();
         }
 
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            return View();
+            List<Project> model = new();
+
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            model = await _projectService.GetAllProjectsByCompany(companyId);
+
+            return View(model);
         }
 
         public IActionResult Privacy()

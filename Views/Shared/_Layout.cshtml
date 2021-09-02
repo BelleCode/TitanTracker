@@ -295,13 +295,13 @@
 
                             <ul class="nav nav-main">
                                 <li>
-                                    <a class="nav-link" href="layouts-default.html">
+                                    <a class="nav-link" href="layouts.html">
                                         <i class="bx bx-home-alt" aria-hidden="true"></i>
                                         <span>Dashboard</span>
                                     </a>
                                 </li>
-                                <li class="nav-parent">
-                                    <a class="nav-link" href="#">
+                                <li class="nav-parent  nav-expanded nav-active">
+                                    <a class="nav-link" href="layouts-default.html">
                                         <i class="fas fa-home" aria-hidden="true"></i>
                                         <span>Original Pages</span>
                                     </a>
@@ -317,49 +317,34 @@
                                             </a>
                                         </li>
                                         <li>
+                                            <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Create">
+                                                Projects - Create
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Edit">
+                                                Projects - Edit
+                                            </a>
+                                        </li>
+                                        <li>
                                             <a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Index">
                                                 Tickets List
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Create">
+                                                Tickets - Create
                                             </a>
                                         </li>
 
                                         <li>
-                                            <a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Index">
-                                                Tickets List
+                                            <a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Edit">
+                                                Tickets - Edit
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ecommerce-category-form.html">
-                                                Category Form
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-coupons-list.html">
-                                                Coupons List
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-coupons-form.html">
-                                                Coupons Form
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-orders-list.html">
-                                                Orders List
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-orders-detail.html">
-                                                Orders Detail
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-customers-list.html">
-                                                Customers List
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link" href="ecommerce-customers-form.html">
-                                                Customers Form
+                                            <a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Create">
+                                                Tickets - Create
                                             </a>
                                         </li>
                                     </ul>
@@ -371,7 +356,7 @@
                                         <span>Mailbox</span>
                                     </a>
                                 </li>
-                                <li class="nav-parent nav-expanded nav-active">
+                                <li class="nav-parent">
                                     <a class="nav-link" href="#">
                                         <i class="bx bx-layout" aria-hidden="true"></i>
                                         <span>Layouts</span>

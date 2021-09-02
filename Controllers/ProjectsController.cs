@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +21,15 @@ namespace TitanTracker.Controllers
         private readonly IBTCompanyInfoService _companInfoService;
         private readonly IBTRolesService _rolesService;
         private readonly IBTProjectService _projectService;
+        private readonly IBTFileService _fileService;
 
-        public ProjectsController(ApplicationDbContext context, IBTCompanyInfoService companInfoService, IBTRolesService rolesService, IBTProjectService projectService)
+        public ProjectsController(ApplicationDbContext context, IBTCompanyInfoService companInfoService, IBTRolesService rolesService, IBTProjectService projectService, IBTFileService fileService)
         {
             _context = context;
             _companInfoService = companInfoService;
             _rolesService = rolesService;
             _projectService = projectService;
+            _fileService = fileService;
         }
 
         // GET: Projects
@@ -110,10 +113,21 @@ namespace TitanTracker.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        [Authorize(Roles = "Admin, ProgramManager, ProjectManager")]
+        public async Task<IActionResult> Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id");
+            int companyId = User.Identity.GetCompanyId().Value;
+            // Add ViewModel instance "AddProjectWithPMViewModel"
+            AddProjectWithPMViewModel model = new();
+
+            // Load SelectLists with data i.e. PMList & PriorityList
+            model.PMList = new SelectList(await _rolesService
+                               .GetUsersInRoleAsync(Roles.ProgramManager.ToString(), companyId), "id", "FullName");
+
+            model.PriorityList = new SelectList(_context.ProjectPriorities, "Id", "Name");
+
+            // Return View with viewModel instace as the model
+
             return View();
         }
 
@@ -122,17 +136,43 @@ namespace TitanTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CompanyId,Name,Description,StartDate,EndDate,ProjectPriorityId,FileData,FileContentType,Archived")] Project project)
+        public async Task<IActionResult> Create(AddProjectWithPMViewModel model)
         {
-            if (ModelState.IsValid)
+            int companyId = User.Identity.GetCompanyId().Value;
+            // Change the above parameeter type to "AddProjectWithPMViewModel" as model
+
+            // Test if model is null (aka if data has been capture from the form)
+            if (model != null)
             {
-                _context.Add(project);
+                // Capture the image if one has been selected
+                try
+                {
+                    if (model.Project.FormFile != null)
+                    {
+                        model.Project.FileData = await _fileService.ConvertFileToByteArrayAsync(model.Project.FormFile);
+                        model.Project.FileName = model.Project.FormFile.FileName;
+                        model.Project.FileContentType = model.Project.FormFile.ContentType;
+                    }
+
+                    model.Project.CompanyId = companyId;
+
+                    await _projectService.AddNewProjectAsync(model.Project);
+
+                    // Add PM if one was chosen
+                    if (!string.IsNullOrEmpty(model.PmId))
+                    {
+                        await _projectService.AddUserToProjectAsync(model.PmId, model.Project.Id);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Create));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id", project.ProjectPriorityId);
-            return View(project);
+
+            return RedirectToAction("Create");
         }
 
         // GET: Projects/Edit/5

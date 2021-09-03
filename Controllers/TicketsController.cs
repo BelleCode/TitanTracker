@@ -29,11 +29,34 @@ namespace TitanTracker.Controllers
             _ticketService = ticketService;
         }
 
-        // GET: Tickets
+        // GET:  All Tickets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.OwnerUser).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser)
+                                                       .Include(t => t.OwnerUser)
+                                                       .Include(t => t.TicketPriority)
+                                                       .Include(t => t.TicketStatus)
+                                                       .Include(t => t.TicketType);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Tickets based on 1 user ID
+        public async Task<IActionResult> MyTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            string userId = _userManager.GetUserId(User);
+
+            List<Ticket> tickets = await _ticketService.GetTicketsByUserIdAsync(userId, companyId);
+            return View(tickets);
+        }
+
+        // GET: All tickets that are assigned to a person in a company
+        public async Task<IActionResult> AllTickets()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Ticket> tickets = await _ticketService.GetAllTicketsByCompanyAsync(companyId);
+            return View(tickets);
         }
 
         // GET: Tickets/Details/5

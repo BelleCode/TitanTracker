@@ -66,7 +66,7 @@ namespace TitanTracker.Controllers
 
             string userRole = member.SelectedRoles.FirstOrDefault();
 
-            if (string.IsNullOrEmpty(userRole))
+            if (!string.IsNullOrEmpty(userRole))
             {
                 // ToDo: Sweet alert here....
                 await _rolesService.AddUserToRoleAsync(user, userRole);

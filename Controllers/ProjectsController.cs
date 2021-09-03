@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +23,21 @@ namespace TitanTracker.Controllers
         private readonly IBTRolesService _rolesService;
         private readonly IBTProjectService _projectService;
         private readonly IBTFileService _fileService;
+        private readonly UserManager<BTUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context, IBTCompanyInfoService companInfoService, IBTRolesService rolesService, IBTProjectService projectService, IBTFileService fileService)
+        public ProjectsController(ApplicationDbContext context,
+                                  IBTCompanyInfoService companInfoService,
+                                  IBTRolesService rolesService,
+                                  IBTProjectService projectService,
+                                  IBTFileService fileService,
+                                  UserManager<BTUser> userManager)
         {
             _context = context;
             _companInfoService = companInfoService;
             _rolesService = rolesService;
             _projectService = projectService;
             _fileService = fileService;
+            _userManager = userManager;
         }
 
         // GET: Projects
@@ -37,6 +45,26 @@ namespace TitanTracker.Controllers
         {
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> MyProjects()
+        {
+            string userId = _userManager.GetUserId(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
+
+        public async Task<IActionResult> AllCompanyProjects()
+        {
+            string userId = _userManager.GetUserId(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetAllProjectsByCompany(companyId);
+
+            return View(projects);
         }
 
         [HttpGet]
@@ -128,7 +156,7 @@ namespace TitanTracker.Controllers
 
             // Return View with viewModel instace as the model
 
-            return View();
+            return View(model);
         }
 
         // POST: Projects/Create
@@ -158,7 +186,7 @@ namespace TitanTracker.Controllers
 
                     await _projectService.AddNewProjectAsync(model.Project);
 
-                    // Add PM if one was chosen
+                    // Is there a PM? If there is a Pm chosen, add them.
                     if (!string.IsNullOrEmpty(model.PmId))
                     {
                         await _projectService.AddUserToProjectAsync(model.PmId, model.Project.Id);
@@ -168,6 +196,7 @@ namespace TitanTracker.Controllers
                 {
                     throw;
                 }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Create));
             }

@@ -34,7 +34,15 @@
                 <label asp-for="PriorityList" class="control-label"></label>
                 <select asp-for="ProjectPriority" class="form-control" asp-items="@Model.PriorityList"></select>
             </div>
+
             <label>Image Preview</label>
+
+            <div class="form-group">
+                <label asp-for="Project.FormFile" class="control-label"></label>
+                <input asp-for="Project.FormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif" onchange="document.querySelector('#FileData').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="Project.FormFile" class="text-danger"></span>
+            </div>
+
             @if (Model.Project.FileData != null)
             {
                 <img id="FileData" class="img-fluid img-thumbnail" src="data:image/*;base64,@(Convert.ToBase64String(Model.Project.FileData))" />
@@ -43,12 +51,6 @@
             {
                 <img id="=FileData" class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
             }
-            <div class="form-group">
-                <label asp-for="Project.FormFile" class="control-label"></label>
-                <input asp-for="Project.FormFile" class="form-control" type="file" accept=".png, .jpg, .jpeg, .gif" onchange="document.querySelector('#FileData').src = window.URL.createObjectURL(this.files[0])" />
-                <span asp-validation-for="Project.FormFile" class="text-danger"></span>
-            </div>
-
             <div class="form-group">
                 <label class="control-label">Project Manager</label>
                 <select asp-for="PmId" class="form-control" asp-items="@Model.PMList"></select>

@@ -1,10 +1,6 @@
 ﻿@model TitanTracker.Models.ViewModels.AddProjectWithPMViewModel
 
-@{
-    ViewData["Title"] = "Create";
-}
-
-<h1>Create</h1>
+<h1>Create a Project</h1>
 
 <h4>Project</h4>
 <hr />
@@ -34,6 +30,7 @@
                 <span asp-validation-for="Project.EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
+
                 <label asp-for="PriorityList" class="control-label"></label>
                 <select asp-for="ProjectPriority" class="form-control" asp-items="@Model.PriorityList"></select>
             </div>
@@ -42,6 +39,16 @@
                 <input asp-for="Project.FormFile" class="form-control" type="file" accept:".png, .jpg, .jpeg, .gif" />
                 <span asp-validation-for="Project.FormFile" class="text-danger"></span>
             </div>
+            <label>Image Preview</label>
+            @if (Model.Project.FileData != null)
+            {
+                <img id="FileData" class="img-fluid img-thumbnail" src="data:image/*;base64@(Convert.ToBase64String(Model.Project.FileData))" />
+            }
+            else
+            {
+                <img id="=FileData" class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
+            }
+
             <div class="form-group">
                 <label class="control-label">Project Manager</label>
                 <select asp-for="PmId" class="form-control" asp-items="@Model.PMList"></select>

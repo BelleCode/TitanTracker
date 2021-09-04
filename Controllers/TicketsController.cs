@@ -51,7 +51,7 @@ namespace TitanTracker.Controllers
         }
 
         // GET: All tickets that are assigned to a person in a company
-        public async Task<IActionResult> AllTickets()
+        public async Task<IActionResult> AllCompanyTickets()
         {
             int companyId = User.Identity.GetCompanyId().Value;
 

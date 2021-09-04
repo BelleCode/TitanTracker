@@ -43,7 +43,8 @@ namespace TitanTracker.Controllers
         // GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
+            var applicationDbContext = _context.Projects.Include(p => p.Company)
+                                                        .Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
         }
 

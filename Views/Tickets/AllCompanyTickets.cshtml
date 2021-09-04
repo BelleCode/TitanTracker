@@ -80,10 +80,10 @@
                     @Html.DisplayFor(modelItem => item.TicketStatus.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OwnerUser.Id)
+                    @Html.DisplayFor(modelItem => item.OwnerUser.PreferredName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DeveloperUser.Id)
+                    @Html.DisplayFor(modelItem => item.DeveloperUser.PreferredName)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

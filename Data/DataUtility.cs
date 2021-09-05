@@ -225,9 +225,9 @@ namespace TitanTracker.Data
             {
                 UserName = "btadmin1@bugtracker.com",
                 Email = "btadmin1@bugtracker.com",
-                FirstName = "Bill",
-                LastName = "Appuser",
-                PreferredName = "BillA",
+                FirstName = "Felcity",
+                LastName = "Smoak",
+                PreferredName = "Overwatch",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -254,9 +254,9 @@ namespace TitanTracker.Data
             {
                 UserName = "btadmin2@bugtracker.com",
                 Email = "btadmin2@bugtracker.com",
-                FirstName = "Steve",
-                LastName = "Appuser",
-                PreferredName = "SteveA",
+                FirstName = "Cisco",
+                LastName = "Ramon",
+                PreferredName = "Vibe",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };
@@ -278,14 +278,72 @@ namespace TitanTracker.Data
                 throw;
             }
 
+            //Seed Default ProgramManager1 User
+            defaultUser = new BTUser
+            {
+                UserName = "ProgramManager1@bugtracker.com",
+                Email = "ProgramManager1@bugtracker.com",
+                FirstName = "Kara",
+                LastName = "Danvers",
+                PreferredName = "SuperGirl",
+                EmailConfirmed = true,
+                CompanyId = company1Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.ProgramManager.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default ProgramManager1 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
+            //Seed Default ProgramManager2 User
+            defaultUser = new BTUser
+            {
+                UserName = "ProgramManager2@bugtracker.com",
+                Email = "ProgramManager2@bugtracker.com",
+                FirstName = "Barry",
+                LastName = "Allen",
+                PreferredName = "Flash",
+                EmailConfirmed = true,
+                CompanyId = company2Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.ProgramManager.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default ProgramManager2 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
             //Seed Default ProjectManager1 User
             defaultUser = new BTUser
             {
                 UserName = "ProjectManager1@bugtracker.com",
                 Email = "ProjectManager1@bugtracker.com",
                 FirstName = "John",
-                LastName = "Appuser",
-                PreferredName = "John",
+                LastName = "Diggle",
+                PreferredName = "Spartan",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -312,9 +370,9 @@ namespace TitanTracker.Data
             {
                 UserName = "ProjectManager2@bugtracker.com",
                 Email = "ProjectManager2@bugtracker.com",
-                FirstName = "Jane",
-                LastName = "Appuser",
-                PreferredName = "Jane",
+                FirstName = "Caitlin",
+                LastName = "Snow",
+                PreferredName = "Killer Frost",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };
@@ -341,9 +399,9 @@ namespace TitanTracker.Data
             {
                 UserName = "Developer1@bugtracker.com",
                 Email = "Developer1@bugtracker.com",
-                FirstName = "Elon",
-                LastName = "Appuser",
-                PreferredName = "El",
+                FirstName = "Clark",
+                LastName = "Kent",
+                PreferredName = "SuperMan",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -370,9 +428,9 @@ namespace TitanTracker.Data
             {
                 UserName = "Developer2@bugtracker.com",
                 Email = "Developer2@bugtracker.com",
-                FirstName = "James",
-                LastName = "Appuser",
-                PreferredName = "JJ",
+                FirstName = "Curtis",
+                LastName = "Holt",
+                PreferredName = "Mister Terrific",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };
@@ -400,8 +458,8 @@ namespace TitanTracker.Data
                 UserName = "Developer3@bugtracker.com",
                 Email = "Developer3@bugtracker.com",
                 FirstName = "Natasha",
-                LastName = "Appuser",
-                PreferredName = "Nat",
+                LastName = "Romanoff",
+                PreferredName = "Black Widow",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -429,8 +487,8 @@ namespace TitanTracker.Data
                 UserName = "Developer4@bugtracker.com",
                 Email = "Developer4@bugtracker.com",
                 FirstName = "Carol",
-                LastName = "Appuser",
-                PreferredName = "Carol",
+                LastName = "Danvers",
+                PreferredName = "Captain Marvel",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };
@@ -457,9 +515,9 @@ namespace TitanTracker.Data
             {
                 UserName = "Developer5@bugtracker.com",
                 Email = "Developer5@bugtracker.com",
-                FirstName = "Tony",
-                LastName = "Appuser",
-                PreferredName = "Tony",
+                FirstName = "Clint",
+                LastName = "Barton",
+                PreferredName = "Hawkeye",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -487,8 +545,8 @@ namespace TitanTracker.Data
                 UserName = "Developer6@bugtracker.com",
                 Email = "Developer6@bugtracker.com",
                 FirstName = "Bruce",
-                LastName = "Appuser",
-                PreferredName = "Bru",
+                LastName = "Banner",
+                PreferredName = "Hulk",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };
@@ -516,8 +574,8 @@ namespace TitanTracker.Data
                 UserName = "Submitter1@bugtracker.com",
                 Email = "Submitter1@bugtracker.com",
                 FirstName = "Scott",
-                LastName = "Appuser",
-                PreferredName = "Scott",
+                LastName = "Lang",
+                PreferredName = "Ant-Man",
                 EmailConfirmed = true,
                 CompanyId = company1Id
             };
@@ -544,9 +602,9 @@ namespace TitanTracker.Data
             {
                 UserName = "Submitter2@bugtracker.com",
                 Email = "Submitter2@bugtracker.com",
-                FirstName = "Sue",
-                LastName = "Appuser",
-                PreferredName = "Sue",
+                FirstName = "Peter",
+                LastName = "Parker",
+                PreferredName = "Spider-Man",
                 EmailConfirmed = true,
                 CompanyId = company2Id
             };

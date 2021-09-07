@@ -68,6 +68,43 @@ namespace TitanTracker.Controllers
             return View(projects);
         }
 
+        // Get projects that don't have a PM
+        public async Task<IActionResult> AssignProjMIndex()
+        {
+            string userId = _userManager.GetUserId(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetUnassignedProjectsAsync(companyId);
+
+            return View(projects);
+        }
+
+        public async Task<IActionResult> AssignProjM(int id)
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+            // Create new viewmodel for Project and list of Project Managers
+            AssignPMViewModel model = new();
+
+            model.Project = await _projectService.GetProjectByIdAsync(id, companyId);
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName");
+            // Shows page that has a specific project,
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignProjM(AssignPMViewModel model)
+        {
+            // Set Parameter for AddProjectManagerViewModel
+
+            if (!string.IsNullOrEmpty(model.PmId))
+            {
+                await _projectService.AddProjectManagerAsync(model.PmId, model.Project.Id);
+                return RedirectToAction("Details", "Projects", new { id = model.Project.Id });
+            }
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> AssignMembers(int id)
         {

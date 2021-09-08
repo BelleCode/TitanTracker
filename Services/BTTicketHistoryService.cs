@@ -28,12 +28,12 @@ namespace TitanTracker.Services
                     TicketHistory history = new()
                     {
                         TicketId = newTicket.Id,
-                        Property = "",
-                        OldValue = "",
-                        NewValue = "",
+                        Property = "Title",
+                        OldValue = oldTicket.Title,
+                        NewValue = newTicket.Title,
                         Created = DateTimeOffset.Now,
                         UserId = userId,
-                        Description = "New Ticket Created"
+                        Description = $"newticket"
                     };
 
                     try

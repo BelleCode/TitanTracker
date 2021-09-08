@@ -1,7 +1,27 @@
 ﻿@model IEnumerable<TitanTracker.Models.Project>
+@using TitanTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using TitanTracker.Extensions
+
+@inject IBTCompanyInfoService CompanyService
+@inject UserManager<BTUser> UserManager
+
+@{ 
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    int companyId = User.Identity.GetCompanyId().Value;
+}
+
 
 <header class="page-header">
-    <h2>Dark Layout</h2>
+    <h2>
+        @btUser.PreferredName |
+        @{
+            @foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        }
+    </h2>
 
     <div class="right-wrapper text-end">
         <ol class="breadcrumbs">

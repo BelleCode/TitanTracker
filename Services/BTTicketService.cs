@@ -269,9 +269,41 @@ namespace TitanTracker.Services
             }
         }
 
+        public async Task<Ticket> GetTicketAsNotTrackingAsync(int ticketId)
+        {
+            try
+            {
+                Ticket ticket = await _context.Tickets
+                                              .Include(t => t.TicketPriority)
+                                              .Include(t => t.TicketStatus)
+                                              .Include(t => t.TicketType)
+                                              .Include(t => t.Project)
+                                              .Include(t => t.DeveloperUser)
+                                              .AsNoTracking().FirstOrDefaultAsync(t => t.Id == ticketId);
+                return ticket;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<Ticket> GetTicketByIdAsync(int ticketId)
         {
-            Ticket ticket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticketId);
+            Ticket ticket = await _context.Tickets.Include(t => t.DeveloperUser)
+                .Include(t => t.OwnerUser)
+                .Include(t => t.Project)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType)
+                .Include(t => t.Comments)
+                    .ThenInclude(t => t.User)
+                .Include(t => t.Attachments)
+                    .ThenInclude(t => t.User)
+                .Include(t => t.History)
+                    .ThenInclude(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == ticketId);
+
             return ticket;
         }
 
@@ -292,6 +324,36 @@ namespace TitanTracker.Services
                 }
 
                 return ticket.DeveloperUser;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId)
+        {
+            try
+            {
+                // Implicit declaration : used when you don't know what will be returned (i.e. API calls etc... ) may not have a model
+                //var tiket = new Ticket();
+
+                // Explict declaration
+                Ticket ticket = await _context.Tickets.Include(t => t.DeveloperUser)
+                    .Include(t => t.OwnerUser)
+                    .Include(t => t.Project)
+                    .Include(t => t.TicketPriority)
+                    .Include(t => t.TicketStatus)
+                    .Include(t => t.TicketType)
+                    .Include(t => t.Comments)
+                        .ThenInclude(t => t.User)
+                    .Include(t => t.Attachments)
+                        .ThenInclude(t => t.User)
+                    .Include(t => t.History)
+                        .ThenInclude(t => t.User)
+                    .AsNoTracking().FirstOrDefaultAsync(t => t.Id == ticketId);
+
+                return ticket;
             }
             catch (Exception)
             {

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<TitanTracker.Models.Project>
 @using TitanTracker.Models.Enums
-@inject TitanTracker.Services.BTProjectService
+@using TitanTracker.Services.Interfaces
+@inject IBTProjectService BTProjectService
 
 @{
     ViewData["Title"] = "Index";
@@ -74,10 +75,11 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @* //TODO: GetProject Manager so Assigner can see who is assigned to each project *@
-                    @*@if(GetProjectManagerAsync(item.Id)*@
-                    @*@Html.DisplayFor(modelItem => item.Members.Any(User.IsInRole(Roles.ProjectManager.ToString())))*@
-                    )
+                    @if (BTProjectService.GetProjectManagerAsync(item.Id) != null)
+                    {
+                        // BTUser projectManager = await BTProjectService.GetProjectManagerAsync(item.Id);
+                        <span>PreferredName</span>
+                    }
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-xs">Details</a>

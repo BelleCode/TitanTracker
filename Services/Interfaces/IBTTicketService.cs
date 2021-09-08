@@ -30,6 +30,8 @@ namespace TitanTracker.Services.Interfaces
 
         public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName);
 
+        public Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId);
+
         // Get tickets by Role
         public Task<BTUser> GetTicketDeveloperAsync(int ticketId, int companyId);
 

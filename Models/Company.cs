@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +24,7 @@ namespace TitanTracker.Models
 
         [NotMapped]
         [DataType(DataType.Upload)]
-        public string FormFile { get; set; }
+        public IFormFile FormFile { get; set; }
 
         [DisplayName("Company File Name")]
         public string FileName { get; set; }

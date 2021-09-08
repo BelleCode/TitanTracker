@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Extensions;
 
 namespace TitanTracker.Models
 {
@@ -32,7 +33,9 @@ namespace TitanTracker.Models
         public string FullName { get { return $"{FirstName} {LastName}"; } }
 
         [NotMapped]
+        [DisplayName("Select Image")]
         [DataType(DataType.Upload)]
+        [MaxFileSize(2 * 1024 * 1024)]
         public IFormFile AvatarFormFile { get; set; }
 
         [DisplayName("Avatar")]

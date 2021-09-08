@@ -37,6 +37,9 @@ namespace TitanTracker.Models
         [DisplayName("Project Priority Id")]
         public int? ProjectPriorityId { get; set; }
 
+        [DisplayName("Project Manager")]
+        public string ProjectManagerId { get; set; }
+
         [NotMapped]
         [DisplayName("Project FormFile")]
         [DataType(DataType.Upload)]

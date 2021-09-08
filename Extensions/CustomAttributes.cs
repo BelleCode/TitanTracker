@@ -50,6 +50,7 @@ namespace TitanTracker.Extensions
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var file = value as IFormFile;
+
             if (file != null)
             {
                 var extension = Path.GetExtension(file.FileName);
@@ -62,9 +63,9 @@ namespace TitanTracker.Extensions
             return ValidationResult.Success;
         }
 
-        public string GetErrorMessage(int _maxFileSize)
+        public string GetErrorMessage(string ext)
         {
-            return $"Maximum allowed file size is { _maxFileSize} bytes.";
+            return $"Maximum allowed file size is {ext} bytes.";
         }
     }
 }

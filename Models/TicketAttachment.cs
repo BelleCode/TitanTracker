@@ -31,6 +31,7 @@ namespace TitanTracker.Models
         public string FileName { get; set; }
 
         [NotMapped]
+        [DisplayName("Select Image")]
         [DataType(DataType.Upload)]
         [MaxFileSize(2 * 1024 * 1024)]
         [AllowedExtensions(new string[] { ".jpg", ".png", ".doc", ".docx", ".xls", ".xlsx ", ".pdf" })]

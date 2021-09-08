@@ -20,13 +20,15 @@ namespace TitanTracker.Controllers
         private readonly IBTProjectService _projectService;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTTicketService _ticketService;
+        private readonly IBTTicketHistoryService _ticketHistoryService;
 
-        public TicketsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTTicketService ticketService)
+        public TicketsController(ApplicationDbContext context, IBTProjectService projectService, UserManager<BTUser> userManager, IBTTicketService ticketService, IBTTicketHistoryService ticketHistoryService)
         {
             _context = context;
             _projectService = projectService;
             _userManager = userManager;
             _ticketService = ticketService;
+            _ticketHistoryService = ticketHistoryService;
         }
 
         // GET:  All Tickets
@@ -127,7 +129,10 @@ namespace TitanTracker.Controllers
 
                 await _ticketService.AddNewTicketAsync(ticket);
 
-                //TODO: Add to History
+                // Capture the new History
+                Ticket newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id);
+
+                await _ticketHistoryService.AddHistoryAsync(null, newTicket, btUser.Id);
 
                 //TODO: Send Notification
 

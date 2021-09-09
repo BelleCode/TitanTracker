@@ -53,6 +53,7 @@ namespace TitanTracker.Controllers
             ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
             ViewData["InviteeId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["InvitorId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
             return View();
         }
 

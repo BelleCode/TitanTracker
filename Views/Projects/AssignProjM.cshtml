@@ -1,12 +1,12 @@
 ﻿@model TitanTracker.Models.ViewModels.AssignPMViewModel
 
-<h1>Create a Project</h1>
+<h1>Assign Project Manager</h1>
 
 <h4>Assign Project Manager</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
+        <form asp-action="AssignProjM" method="post">
             <input asp-for="Project.Id" hidden />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <p>@Model.Project.Name</p>

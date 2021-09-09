@@ -11,7 +11,14 @@
     <!-- Basic -->
     <meta charset="UTF-8">
 
-    <title>Dark Layout | Porto Admin - Responsive HTML5 Template</title>
+    <title>@btUser.PreferredName |              
+        @{
+            @foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        } View
+    </title>
     <meta name="keywords" content="HTML5 Admin Template" />
     <meta name="description" content="Porto Admin - Responsive HTML5 Template">
     <meta name="author" content="okler.net">
@@ -51,15 +58,51 @@
         <partial name="_LogoutPartial" />
 
         <!-- start: header -->
-        <header class="header">
-            <div class="logo-container">
-                <a asp-controller="Home" asp-action="Dashboard" class="logo">
-                    <img src="img/logo.png" width="75" height="35" alt="Porto Admin" />
+        <header class="header ps-3">
+            @*<div class="logo-container">            </div>*@
+            @*<a asp-controller="Home" asp-action="Dashboard" class="logo">
+            <img src="img/logo.png" width="75" height="35" alt="Porto Admin" />
+        </a>*@
+
+            <div id="userbox" class="userbox ms-0 mt-3">
+                <a href="#" data-bs-toggle="dropdown">
+                    <figure class="profile-picture">
+                        <img src="~/img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="~/img/!logged-user.jpg" />
+                    </figure>
+                    <div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
+                        <span class="name">@btUser.PreferredName</span>
+                        @*<span class="role">Adminstrator</span>*@
+                        @{
+                            @foreach (var role in await UserManager.GetRolesAsync(btUser))
+                            {
+                                <span class="role">@role</span>
+                            }
+                        }
+                    </div>
+
+                    <i class="fa custom-caret"></i>
                 </a>
 
-                <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
-                    <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+                <div class="dropdown-menu">
+                    <ul class="list-unstyled mb-2">
+                        <li class="divider"></li>
+                        <li>
+                            <a role="menuitem" tabindex="-1" href="~/pages-user-profile.html"><i class="bx bx-user-circle"></i> My Profile</a>
+                        </li>
+                        <li>
+                            <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
+                        </li>
+                        <li>
+                            <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Logout</a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <i class="fa custom-caret"></i>
+
+
+            <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
             </div>
 
             <!-- start: search & user box -->
@@ -235,42 +278,7 @@
                     </li>
                 </ul>
 
-                <span class="separator"></span>
 
-                <div id="userbox" class="userbox">
-                    <a href="#" data-bs-toggle="dropdown">
-                        <figure class="profile-picture">
-                            <img src="img/!logged-user.jpg" alt="Joseph Doe" class="rounded-circle" data-lock-picture="img/!logged-user.jpg" />
-                        </figure>
-                        <div class="profile-info" data-lock-name="@btUser.FullName" data-lock-email="@btUser.Email">
-                            <span class="name">@btUser.PreferredName</span>
-                            @*<span class="role">Adminstrator</span>*@
-                            @{
-                                @foreach (var role in await UserManager.GetRolesAsync(btUser))
-                                {
-                                    <span class="role">@role</span>
-                                }
-                            }
-                        </div>
-
-                        <i class="fa custom-caret"></i>
-                    </a>
-
-                    <div class="dropdown-menu">
-                        <ul class="list-unstyled mb-2">
-                            <li class="divider"></li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="bx bx-user-circle"></i> My Profile</a>
-                            </li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
-                            </li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit();"><i class="bx bx-power-off"></i> Logout</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
             <!-- end: search & user box -->
         </header>
@@ -296,15 +304,21 @@
                             <ul class="nav nav-main">
                                 <li>
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard">
-                                        <i class="bx bx-home-alt" aria-hidden="true"></i>
+                                        <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
                                         <span>Dashboard</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard">
+                                        <i class="fas fa-bug text-danger" aria-hidden="true"></i>
+                                        <span class="text-danger">Submit a Ticket</span>
                                     </a>
                                 </li>
 
                                 <li class="nav-parent  nav-expanded nav-active ">
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Dashboard">
                                         <i class="fas fa-user-secret" aria-hidden="true"></i>
-                                        <span>Admin Tools</span>
+                                        <span>Admin Tools</span>How
                                     </a>
                                     <ul class="nav nav-children">
                                         <li>
@@ -401,7 +415,7 @@
                                 </li>
 
                                 <li>
-                                    <a class="nav-link" href="mailbox-folder.html">
+                                    <a class="nav-link" href="~/mailbox-folder.html">
                                         <span class="float-end badge badge-primary">182</span>
                                         <i class="bx bx-envelope" aria-hidden="true"></i>
                                         <span>Mailbox</span>
@@ -414,17 +428,17 @@
                                     </a>
                                     <ul class="nav nav-children">
                                         <li>
-                                            <a class="nav-link" href="index.html">
+                                            <a class="nav-link" href="~/index.html">
                                                 Landing Page
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="layouts-default.html">
+                                            <a class="nav-link" href="~/layouts-default.html">
                                                 Default
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="layouts-modern.html">
+                                            <a class="nav-link" href="~/layouts-modern.html">
                                                 Modern
                                             </a>
                                         </li>
@@ -434,12 +448,12 @@
                                             </a>
                                             <ul class="nav nav-children">
                                                 <li>
-                                                    <a class="nav-link" href="layouts-boxed.html">
+                                                    <a class="nav-link" href="~/layouts-boxed.html">
                                                         Static Header
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="nav-link" href="layouts-boxed-fixed-header.html">
+                                                    <a class="nav-link" href="~/layouts-boxed-fixed-header.html">
                                                         Fixed Header
                                                     </a>
                                                 </li>
@@ -451,34 +465,34 @@
                                             </a>
                                             <ul class="nav nav-children">
                                                 <li>
-                                                    <a class="nav-link" href="layouts-header-menu.html">
+                                                    <a class="nav-link" href="~/layouts-header-menu.html">
                                                         Pills
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="nav-link" href="layouts-header-menu-stripe.html">
+                                                    <a class="nav-link" href="~/layouts-header-menu-stripe.html">
                                                         Stripe
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="nav-link" href="layouts-header-menu-top-line.html">
+                                                    <a class="nav-link" href="~/layouts-header-menu-top-line.html">
                                                         Top Line
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
                                         <li class="nav-active">
-                                            <a class="nav-link" href="layouts-dark.html">
+                                            <a class="nav-link" href="~/layouts-dark.html">
                                                 Dark
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="layouts-dark-header.html">
+                                            <a class="nav-link" href="~/layouts-dark-header.html">
                                                 Dark Header
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="layouts-two-navigations.html">
+                                            <a class="nav-link" href="~/layouts-two-navigations.html">
                                                 Two Navigations
                                             </a>
                                         </li>
@@ -488,12 +502,12 @@
                                             </a>
                                             <ul class="nav nav-children">
                                                 <li>
-                                                    <a class="nav-link" href="layouts-tab-navigation-dark.html">
+                                                    <a class="nav-link" href="~/layouts-tab-navigation-dark.html">
                                                         Tab Navigation Dark
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="nav-link" href="layouts-tab-navigation.html">
+                                                    <a class="nav-link" href="~/layouts-tab-navigation.html">
                                                         Tab Navigation Light
                                                     </a>
                                                 </li>
@@ -769,37 +783,37 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-accordions.html">
+                                            <a class="nav-link" href="~/ui-elements-accordions.html">
                                                 Accordions
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-toggles.html">
+                                            <a class="nav-link" href="~/ui-elements-toggles.html">
                                                 Toggles
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-nestable.html">
+                                            <a class="nav-link" href="~/ui-elements-nestable.html">
                                                 Nestable
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-tree-view.html">
+                                            <a class="nav-link" href="~/ui-elements-tree-view.html">
                                                 Tree View
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-scrollable.html">
+                                            <a class="nav-link" href="~/ui-elements-scrollable.html">
                                                 Scrollable
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-grid-system.html">
+                                            <a class="nav-link" href="~/ui-elements-grid-system.html">
                                                 Grid System
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="nav-link" href="ui-elements-charts.html">
+                                            <a class="nav-link" href="~/ui-elements-charts.html">
                                                 Charts
                                             </a>
                                         </li>
@@ -809,12 +823,12 @@
                                             </a>
                                             <ul class="nav nav-children">
                                                 <li>
-                                                    <a class="nav-link" href="ui-elements-animations-appear.html">
+                                                    <a class="nav-link" href="~/ui-elements-animations-appear.html">
                                                         Appear
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="nav-link" href="ui-elements-animations-hover.html">
+                                                    <a class="nav-link" href="~/ui-elements-animations-hover.html">
                                                         Hover
                                                     </a>
                                                 </li>

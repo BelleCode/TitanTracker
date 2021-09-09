@@ -383,7 +383,7 @@ namespace TitanTracker.Services
             // find the project in order to get the members
             try
             {
-                Project project = await _context.Projects.Include(p => p).FirstOrDefaultAsync(p => p.Id == projectId);
+                Project project = await _context.Projects.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
                 bool result = false;
 
                 if (project != null)

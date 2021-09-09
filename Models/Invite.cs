@@ -45,6 +45,9 @@ namespace TitanTracker.Models
         [DisplayName("Invitee Last Name")]
         public string InviteeLastName { get; set; }
 
+        [DisplayName("Invite Message")]
+        public string Message { get; set; }
+
         [DisplayName("Invite is Valid")]
         public bool IsValid { get; set; }
 

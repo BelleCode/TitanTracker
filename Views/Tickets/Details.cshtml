@@ -8,15 +8,31 @@
 @inject UserManager<BTUser> UserManager
 
 @{
-    BTUser bTUser = await UserManager.GetUserAsync(User);
+    BTUser btUser = await UserManager.GetUserAsync(User);
     BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
     //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
 }
 
-<h1>Ticket information</h1>
+<h5>Ticket ID: @Model.Id</h5>
+
+<header class="page-header">
+    <h2>
+        @*@((await UserManager.GetRolesAsync(btUser))[0])*@
+        @{
+            foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        }
+        | Ticket Details
+    </h2>
+    <div>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a>
+    </div>
+</header>
 
 <div>
-    <h4>Ticket Name</h4>
+    <h3>Project :   @Model.Project.Name</h3>
     <hr />
     <div>
         <form asp-action="Create" asp-controller="TicketAttachments" enctype="multipart/form-data" method="post">

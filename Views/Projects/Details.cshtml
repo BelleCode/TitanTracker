@@ -1,10 +1,18 @@
 ﻿@model TitanTracker.Models.Project
+@using TitanTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using TitanTracker.Extensions
+
+@inject IBTCompanyInfoService CompanyService
+@inject IBTProjectService ProjectService
+@inject UserManager<BTUser> UserManager
 
 @{
-    ViewData["Title"] = "Details";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    int companyId = User.Identity.GetCompanyId().Value;
 }
 
-<h1>Details</h1>
+<h1>Project Details</h1>
 
 <div>
     <h4>Project</h4>

@@ -15,6 +15,7 @@
     Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
     List<Project> projects = await ProjectService.GetUserProjectsAsync(btUser.Id);
     List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);
+    List<Project> adminProjects = await ProjectService.GetAdminProjectsAsync(btUser.Id, companyId);
 }
 
 <header class="page-header">
@@ -59,10 +60,20 @@
                                 Burn Down by Project :
                                 <strong>
                                     <select class="form-control" id="salesSelector">
-                                        @foreach (var project in projects)
+                                        @if (!User.IsInRole(Roles.Admin.ToString()))
                                         {
+                                            foreach (var project in projects)
+                                            {
+                                                <option value=project.Id selected>@project.Name </option>
+                                            }
 
-                                            <option value=project.Id selected>@project.Name</option>
+                                        }
+                                        else
+                                        {
+                                            foreach (var project in adminProjects)
+                                            {
+                                                <option value=project.Id selected>@project.Name </option>
+                                            }
                                         }
                                     </select>
                                     @*<option value="Porto Drupal">Porto Drupal</option>

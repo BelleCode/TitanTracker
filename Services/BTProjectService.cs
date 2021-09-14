@@ -340,6 +340,13 @@ namespace TitanTracker.Services
             }
         }
 
+        public async Task<List<Project>> GetAdminProjectsAsync(string userId, int companyId)
+        {
+            List<Project> projects = await GetAllProjectsByCompany(companyId);
+
+            return projects.Where(p => p.AdminId == userId).ToList();
+        }
+
         public async Task<List<Project>> GetUnassignedProjectsAsync(int companyId)
         {
             List<Project> result = new();

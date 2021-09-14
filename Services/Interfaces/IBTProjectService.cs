@@ -16,6 +16,8 @@ namespace TitanTracker.Services.Interfaces
 
         public Task ArchiveProjectAsync(Project project);
 
+        public Task<List<Project>> GetAdminProjectsAsync(string userId, int companyId);
+
         public Task<List<Project>> GetAllProjectsByCompany(int companyId);
 
         public Task<List<Project>> GetAllProjectsByPriority(int companyId, string priorityName);

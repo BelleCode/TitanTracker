@@ -27,6 +27,7 @@ Theme Version: 	4.0.0
 				.events();
 		},
 
+		// Function: Add things to Table
 		setVars: function() {
 			this.$table				= $( this.options.table );
 			this.$addButton			= $( this.options.addButton );
@@ -40,6 +41,7 @@ Theme Version: 	4.0.0
 			return this;
 		},
 
+		// Add nulls to include additional columns.
 		build: function() {
 			this.datatable = this.$table.DataTable({
 				dom: '<"row"<"col-lg-6"l><"col-lg-6"f>><"table-responsive"t>p',
@@ -56,12 +58,13 @@ Theme Version: 	4.0.0
 			return this;
 		},
 
+		// buttons in the action area
 		events: function() {
 			var _self = this;
 
 			this.$table
 				.on('click', 'a.save-row', function( e ) {
-					e.preventDefault();
+					e.preventDefault(); // drop a line here to for code in backend
 
 					_self.rowSave( $(this).closest( 'tr' ) );
 				})
@@ -71,17 +74,17 @@ Theme Version: 	4.0.0
 					_self.rowCancel( $(this).closest( 'tr' ) );
 				})
 				.on('click', 'a.edit-row', function( e ) {
-					e.preventDefault();
+					e.preventDefault();	// drop a line here to for code in backend
 
 					_self.rowEdit( $(this).closest( 'tr' ) );
 				})
 				.on( 'click', 'a.remove-row', function( e ) {
-					e.preventDefault();
+					e.preventDefault(); // drop a line here to for code in backend
 
 					var $row = $(this).closest( 'tr' ),
 						itemId = $row.attr('data-item-id');
 
-					$.magnificPopup.open({
+					$.magnificPopup.open({ //Modal to ask if you want to delete it
 						items: {
 							src: _self.options.dialog.wrapper,
 							type: 'inline'
@@ -104,7 +107,7 @@ Theme Version: 	4.0.0
 							            }
 							        });
 
-									$.magnificPopup.close();
+									$.magnificPopup.close();	// Click on remove on delete
 								});
 							},
 							close: function() {
@@ -113,13 +116,13 @@ Theme Version: 	4.0.0
 						}
 					});
 				});
-
+			// Adds row
 			this.$addButton.on( 'click', function(e) {
 				e.preventDefault();
 
 				_self.rowAdd();
 			});
-
+			// On cancel
 			this.dialog.$cancel.on( 'click', function( e ) {
 				e.preventDefault();
 				$.magnificPopup.close();
@@ -140,11 +143,14 @@ Theme Version: 	4.0.0
 
 			actions = [
 				'<a href="#" class="hidden on-editing save-row"><i class="fas fa-save"></i></a>',
+				// link href: NewAction-> create/Edit
 				'<a href="#" class="hidden on-editing cancel-row"><i class="fas fa-times"></i></a>',
 				'<a href="#" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>',
+				// link href: NewAction-> create/Edit
 				'<a href="#" class="on-default remove-row"><i class="far fa-trash-alt"></i></a>'
+				// change trash in modal
 			].join(' ');
-
+			// TODO: CHANGE THIS TO MAKE DATATABLE MATCH DATA
 			data = this.datatable.row.add([ '', '', '', actions ]);
 			$row = this.datatable.row( data[0] ).nodes().to$();
 
@@ -207,6 +213,7 @@ Theme Version: 	4.0.0
 				$row.removeClass( 'adding' );
 			}
 
+			// TODO: verify LOOP to save values entered
 			values = $row.find('td').map(function() {
 				var $this = $(this);
 
@@ -236,7 +243,7 @@ Theme Version: 	4.0.0
 			this.datatable.row( $row.get(0) ).remove().draw();
 		},
 
-		rowSetActionsEditing: function( $row ) {
+		rowSetActionsEditing: function( $row ) {	// makes items editable on edit click
 			$row.find( '.on-editing' ).removeClass( 'hidden' );
 			$row.find( '.on-default' ).addClass( 'hidden' );
 		},

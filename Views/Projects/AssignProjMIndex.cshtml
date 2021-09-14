@@ -1,17 +1,40 @@
 ﻿@model IEnumerable<TitanTracker.Models.Project>
 @using TitanTracker.Models.Enums
+
+@using Microsoft.AspNetCore.Identity
 @using TitanTracker.Services.Interfaces
+@inject IBTFileService BTFileService
 @inject IBTProjectService BTProjectService
+@inject IBTTicketService BTTicketService
+@inject UserManager<BTUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    //BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
+    //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
 }
+
+<h1>All Company Projects</h1>
 
 <h1>Assign Project Manager Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h3>@User.IsInRole(Roles.Admin.ToString())</h3>
+<header class="page-header">
+    <h2>
+        @*@((await UserManager.GetRolesAsync(btUser))[0])*@
+        @{
+            foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        }
+        | Assign Project Manager
+    </h2>
+    <div>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a>
+    </div>
+</header>
+
 <table class="table" method="post" enctype="multipart/form-data">
     <thead>
         <tr>
@@ -59,7 +82,7 @@
                     }
                     else
                     {
-                        <img id="imageFileData" style="width:40px; height:40px" class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
+                        <img id="imageFileData" style="width:40px; height:40px " class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
                     }
                 </td>
                 <td>
@@ -77,8 +100,9 @@
                 <td>
                     @if (BTProjectService.GetProjectManagerAsync(item.Id) != null)
                     {
-                        // BTUser projectManager = await BTProjectService.GetProjectManagerAsync(item.Id);
-                        <span>PreferredName</span>
+                        BTUser projectManager = await BTProjectService.GetProjectManagerAsync(item.Id);
+                        < span > @projectManager.PreferredName </ span>
+
                     }
                 </td>
                 <td>

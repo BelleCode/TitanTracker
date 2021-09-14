@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace TitanTracker.Models.ViewModels
 {
-    public class AssignPMViewModel
+    public class AssignPMViewModel //Assign PM to single project
     {
         public Project Project { get; set; }
-
         public SelectList PMList { get; set; }
-
         public string PmId { get; set; }
     }
 }

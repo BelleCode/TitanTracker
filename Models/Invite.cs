@@ -27,7 +27,7 @@ namespace TitanTracker.Models
         public int CompanyId { get; set; }
 
         [DisplayName("Project")]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
 
         [DisplayName("Invitee")]
         public string InviteeId { get; set; }

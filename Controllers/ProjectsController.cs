@@ -58,14 +58,96 @@ namespace TitanTracker.Controllers
             return View(projects);
         }
 
+        public async Task<IActionResult> SelectPM(AdminIndexViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.PmId != null)
+                {
+                    await _projectService.AddUserToProjectAsync(model.PmId, model.ProjectId);
+                }
+            }
+            return RedirectToAction("AllCompanyProjects");
+        }
+
+        public async Task<IActionResult> SelectDevs(AdminIndexViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.SelectedDevs != null)
+                {
+                    List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.ProjectId))
+                                                                   .Select(m => m.Id).ToList();
+                    foreach (string item in memberIds)
+                    {
+                        await _projectService.RemoveUserFromProjectAsync(item, model.ProjectId);
+                    }
+
+                    foreach (string item in model.SelectedDevs)
+                    {
+                        await _projectService.AddUserToProjectAsync(item, model.ProjectId);
+                    }
+
+                    // go to project details
+                    // return RedirectedAction("Details", "Projects", new { id = model.Project.Id });
+                }
+            }
+
+            return RedirectToAction("AllCompanyProjects");
+        }
+
+        public async Task<IActionResult> SelectSubs(AdminIndexViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.SelectedSubs != null)
+                {
+                    List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.ProjectId))
+                                                                   .Select(m => m.Id).ToList();
+                    foreach (string item in memberIds)
+                    {
+                        await _projectService.RemoveUserFromProjectAsync(item, model.ProjectId);
+                    }
+
+                    foreach (string item in model.SelectedSubs)
+                    {
+                        await _projectService.AddUserToProjectAsync(item, model.ProjectId);
+                    }
+
+                    // go to project details
+                    // return RedirectedAction("Details", "Projects", new { id = model.Project.Id });
+                }
+            }
+
+            return RedirectToAction("AllCompanyProjects");
+        }
+
         public async Task<IActionResult> AllCompanyProjects()
         {
-            string userId = _userManager.GetUserId(User);
+            //string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
+            AdminIndexViewModel pMIndexViewModel = new AdminIndexViewModel();
 
-            List<Project> projects = await _projectService.GetAllProjectsByCompany(companyId);
+            pMIndexViewModel.Projects = await _projectService.GetAllProjectsByCompany(companyId);
 
-            return View(projects);
+            List<BTUser> developers = (await _rolesService.GetUsersInRoleAsync(Roles.Developer.ToString(), companyId));
+            List<BTUser> submitters = (await _rolesService.GetUsersInRoleAsync(Roles.Submitter.ToString(), companyId));
+
+            List<string> devsIdList = new();
+            List<string> subIdList = new();
+            //foreach (BTUser member in developers)
+            //{
+            //    if (await _rolesService.IsUserInRoleAsync(member, Roles.Developer.ToString()))
+            //    {
+            //        devsIdList.Add(member.Id);
+            //    }
+            //}
+
+            pMIndexViewModel.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "PreferredName");
+            pMIndexViewModel.DevList = new MultiSelectList(developers, "Id", "PreferredName", devsIdList);
+            pMIndexViewModel.SubList = new MultiSelectList(submitters, "Id", "PreferredName", subIdList);
+
+            return View(pMIndexViewModel);
         }
 
         // Get projects that don't have a PM

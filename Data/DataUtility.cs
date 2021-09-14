@@ -394,6 +394,36 @@ namespace TitanTracker.Data
                 throw;
             }
 
+
+            //Seed Default ProjectManager3 User
+            defaultUser = new BTUser
+            {
+                UserName = "ProjectManager3@bugtracker.com",
+                Email = "ProjectManager3@bugtracker.com",
+                FirstName = "John",
+                LastName = "Snow",
+                PreferredName = "JS",
+                EmailConfirmed = true,
+                CompanyId = company2Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.ProjectManager.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default ProjectManager3 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
             //Seed Default Developer1 User
             defaultUser = new BTUser
             {

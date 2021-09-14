@@ -95,8 +95,9 @@ namespace TitanTracker.Controllers
 
                 var token = _dataProtector.Protect(guid.ToString());
                 var email = _dataProtector.Protect(invite.InviteeEmail);
+                var company = _dataProtector.Protect(companyId.ToString());
 
-                var callbackUrl = Url.Action("ProcessInvite", "Invites", new { token, email }, protocol: Request.Scheme);
+                var callbackUrl = Url.Action("ProcessInvite", "Invites", new { token, email, company }, protocol: Request.Scheme);
 
                 var body = invite.Message + Environment.NewLine + "Please join my Company."
                                           + Environment.NewLine + "Please click the following link to join <a href=\""
@@ -123,6 +124,42 @@ namespace TitanTracker.Controllers
             ViewData["InvitorId"] = new SelectList(_context.Users, "Id", "Id", invite.InvitorId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
             return View(invite);
+        }
+
+        //Add ProcessInvite Actions
+        [HttpGet]
+        public async Task<IActionResult> ProcessInvite(string token, string email, string company)
+        {
+            if (token == null)
+            {
+                return NotFound();
+            }
+
+            Guid companyToken = Guid.Parse(_dataProtector.Unprotect(token));
+            string inviteeEmail = _dataProtector.Unprotect(email);
+            int companyId = int.Parse(_dataProtector.Unprotect(company));
+
+            try
+            {
+                Invite invite = await _inviteService.GetInviteAsync(companyToken, inviteeEmail, companyId);
+
+                if (invite != null)
+                {
+                    return View(invite);
+                }
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcessInvite(Invite invite)
+        {
+            return RedirectToPage("RegisterByInvite", new { invite });
         }
 
         // GET: Invites/Edit/5

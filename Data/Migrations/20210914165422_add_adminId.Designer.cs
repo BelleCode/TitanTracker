@@ -10,8 +10,8 @@ using TitanTracker.Data;
 namespace TitanTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210830221401_001_initial")]
-    partial class _001_initial
+    [Migration("20210914165422_add_adminId")]
+    partial class add_adminId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -325,10 +325,10 @@ namespace TitanTracker.Data.Migrations
                     b.Property<DateTimeOffset>("JoinDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ProjectId")
+                    b.Property<string>("Message")
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -394,6 +394,9 @@ namespace TitanTracker.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("AdminId")
+                        .HasColumnType("text");
+
                     b.Property<bool>("Archived")
                         .HasColumnType("boolean");
 
@@ -413,10 +416,16 @@ namespace TitanTracker.Data.Migrations
                     b.Property<byte[]>("FileData")
                         .HasColumnType("bytea");
 
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ProjectManagerId")
+                        .HasColumnType("text");
 
                     b.Property<int?>("ProjectPriorityId")
                         .HasColumnType("integer");
@@ -527,7 +536,7 @@ namespace TitanTracker.Data.Migrations
                     b.Property<byte[]>("FileData")
                         .HasColumnType("bytea");
 
-                    b.Property<string>("FormFile")
+                    b.Property<string>("FileName")
                         .HasColumnType("text");
 
                     b.Property<int>("TicketId")
@@ -751,7 +760,9 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasOne("TitanTracker.Models.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
 

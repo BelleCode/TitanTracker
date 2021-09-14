@@ -12,6 +12,6 @@ namespace TitanTracker.Models.Enums
         ProjectManager,
         Developer,
         Submitter,
-        DemoUser
+        DemoUser    // DemoUser
     }
 }

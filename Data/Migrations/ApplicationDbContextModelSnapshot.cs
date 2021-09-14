@@ -326,10 +326,7 @@ namespace TitanTracker.Data.Migrations
                     b.Property<string>("Message")
                         .HasColumnType("text");
 
-                    b.Property<string>("ProjectId")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ProjectId1")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -340,7 +337,7 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasIndex("InvitorId");
 
-                    b.HasIndex("ProjectId1");
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("Invites");
                 });
@@ -394,6 +391,9 @@ namespace TitanTracker.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("AdminId")
+                        .HasColumnType("text");
 
                     b.Property<bool>("Archived")
                         .HasColumnType("boolean");
@@ -758,7 +758,9 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasOne("TitanTracker.Models.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId1");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
 

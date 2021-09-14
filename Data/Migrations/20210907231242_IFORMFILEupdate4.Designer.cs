@@ -325,10 +325,7 @@ namespace TitanTracker.Data.Migrations
                     b.Property<DateTimeOffset>("JoinDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ProjectId")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ProjectId1")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -339,7 +336,7 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasIndex("InvitorId");
 
-                    b.HasIndex("ProjectId1");
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("Invites");
                 });
@@ -757,7 +754,7 @@ namespace TitanTracker.Data.Migrations
 
                     b.HasOne("TitanTracker.Models.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId1");
+                        .HasForeignKey("ProjectId");
 
                     b.Navigation("Company");
 

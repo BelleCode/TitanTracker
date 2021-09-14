@@ -302,14 +302,13 @@ namespace TitanTracker.Data.Migrations
                     JoinDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CompanyToken = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false),
-                    ProjectId = table.Column<string>(type: "text", nullable: true),
+                    ProjectId = table.Column<int>(type: "integer", nullable: true),
                     InviteeId = table.Column<string>(type: "text", nullable: true),
                     InvitorId = table.Column<string>(type: "text", nullable: true),
                     InviteeEmail = table.Column<string>(type: "text", nullable: true),
                     InviteeFirstName = table.Column<string>(type: "text", nullable: true),
                     InviteeLastName = table.Column<string>(type: "text", nullable: true),
                     IsValid = table.Column<bool>(type: "boolean", nullable: false),
-                    ProjectId1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -334,7 +333,7 @@ namespace TitanTracker.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Invites_Projects_ProjectId1",
-                        column: x => x.ProjectId1,
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -590,9 +589,9 @@ namespace TitanTracker.Data.Migrations
                 column: "InvitorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invites_ProjectId1",
+                name: "IX_Invites_ProjectId",
                 table: "Invites",
-                column: "ProjectId1");
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_RecipientId",

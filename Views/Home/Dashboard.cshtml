@@ -1,4 +1,4 @@
-﻿@*@model TitanTracker.Models.ViewModels.AdminIndexViewModel*@
+﻿@model TitanTracker.Models.ViewModels.AdminIndexViewModel
 @using TitanTracker.Models.Enums
 @using TitanTracker.Extensions
 @using Microsoft.AspNetCore.Identity
@@ -167,7 +167,8 @@
                             </div>
                             <div class="widget-summary-col">
                                 <div class="summary">
-                                    <h4 class="title">Active Projects Assigned to You
+                                    <h4 class="title">
+                                        Active Projects Assigned to You
                                     </h4>
                                     <div class="info">
                                         <strong class="amount">15</strong>
@@ -602,7 +603,7 @@
                     <div class="mb-3">
                         <button id="addToTable" class="btn btn-danger fas fa-bug"> Submit a Ticket <i class="fas fa-plus"></i></button>
                     </div>
-                    <table class="table table-bordered table-striped mb-0" id="datatable-tabletools">
+                    <table class="table table-bordered table-striped mb-0" id="TicketsTable">
                         <thead>
                             <tr>
                                 <th>
@@ -1166,4 +1167,9 @@
     <!--<script src="/js/examples/examples.datatables.default.js"></script>
     <script src="/js/examples/examples.datatables.row.with.details.js"></script>
     <script src="/js/examples/examples.datatables.tabletools.js"></script>-->
+    <script>
+        $(document).ready(function () {
+            $('#TicketsTable').DataTable();
+        });
+    </script>
 }

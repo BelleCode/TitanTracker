@@ -98,7 +98,7 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @if (BTProjectService.GetProjectManagerAsync(item.Id) != null)
+                    @if (await BTProjectService.GetProjectManagerAsync(item.Id) != null)
                     {
                         BTUser projectManager = await BTProjectService.GetProjectManagerAsync(item.Id);
                         < span > @projectManager.PreferredName </ span>

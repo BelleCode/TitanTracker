@@ -1,12 +1,40 @@
-﻿@model IEnumerable<TitanTracker.Models.Project>
+﻿@model TitanTracker.Models.ViewModels.AdminIndexViewModel
 @using TitanTracker.Models.Enums
+@using TitanTracker.Extensions
+@using Microsoft.AspNetCore.Identity
+@using TitanTracker.Services.Interfaces
+@inject IBTCompanyInfoService CompanyInfoService
+@inject IBTFileService BTFileService
+@inject IBTProjectService ProjectService
+@inject IBTTicketService TicketService
+@inject UserManager<BTUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    int companyId = User.Identity.GetCompanyId().Value;
+    Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
+    //BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
+    //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
 }
 
-<h1>All Company Projects</h1>
+<h1>All @company.Name Projects</h1>
 
+<h3>@User.IsInRole(Roles.Admin.ToString())</h3>
+<header class="page-header">
+    <h2>
+        @*@((await UserManager.GetRolesAsync(btUser))[0])*@
+        @{
+            foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        }
+        |  @company.Name Projects
+    </h2>
+    <div>
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a>
+    </div>
+</header>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -17,37 +45,40 @@
                 Project Pic
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                Start Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                EndDate
+            </th>
+            <th width="100">
+                Options
             </th>
             <th>
-                Project Options
+                Project Priority
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FileContentType)
+                Project Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Archived)
+                PM
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Company)
+                Devs
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProjectPriority)
+                submitters
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Projects)
         {
             <tr>
                 <td>
@@ -57,13 +88,14 @@
                     }
                     else
                     {
-                        <img id="imageFileData" style="width:40px; height:40px" class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
+                        <img id="imageFileData" style="width: 40px; height: 40px; object-fit: cover" class="img-flud img-thumbnail rounded" src="~/img/Placeholder.png" />
                     }
                 </td>
-                <td>
+                <td width="100">
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
+                <td width="100">
+                    @*// limit the size of this cell*@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
@@ -77,23 +109,39 @@
 
                     @if ((User.IsInRole(Roles.Admin.ToString())) || User.IsInRole(Roles.ProgramManager.ToString()) || User.IsInRole(Roles.ProjectManager.ToString()))
                     {
-                        <a asp-action="AssignProjMIndex" asp-rout-id="@item.Id" class="btn btn-success btn-xs">Assign Proj Man</a>
+                        @*<a asp-action="AssignProjMIndex" asp-rout-id="@item.Id" class="btn btn-success btn-xs">Assign Proj Man</a>*@
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn-xs">Edit</a>
                         <a asp-action="AssignMembers" asp-route-id="@item.Id" class="btn btn-info btn-xs"> Assign Members </a>
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-info btn-xs"> Delete </a>
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FileContentType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Archived)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                </td>
+                <td>
+                    @*add member code here*@
+                    @*Maybe add small icons with images*@
+                </td>
+                <td>
+                    <form asp-action="SelectPM" method="post">
+                        <input hidden asp-for="ProjectId" value="@item.Id" />
+                        <select multiple="multiple" class="form-control" asp-for="PmId" asp-items="@Model.PMList"></select>
+                        <button type="submit" class="btn btn-info"></button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="SelectDevs" method="post">
+                        <input hidden asp-for="ProjectId" value="@item.Id" />
+                        <select multiple="multiple" class="form-control" asp-for="DevId" asp-items="@Model.DevList"></select>
+                        <button type="submit" class="btn btn-info"></button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="SelectSubs" method="post">
+                        <input hidden asp-for="ProjectId" value="@item.Id" />
+                        <select multiple="multiple" class="form-control" asp-for="SubId" asp-items="@Model.SubList"></select>
+                        <button type="submit" class="btn btn-info"></button>
+                    </form>
                 </td>
             </tr>
         }

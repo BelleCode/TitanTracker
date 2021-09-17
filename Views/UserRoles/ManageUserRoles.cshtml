@@ -1,4 +1,230 @@
 ﻿@model IEnumerable<TitanTracker.Models.ViewModels.ManageUserRolesViewModel>
+@using TitanTracker.Models.Enums
+@using TitanTracker.Extensions
+@using Microsoft.AspNetCore.Identity
+@using TitanTracker.Services.Interfaces
+@inject IBTCompanyInfoService CompanyInfoService
+@inject IBTFileService BTFileService
+@inject IBTProjectService ProjectService
+@inject IBTTicketService TicketService
+@inject UserManager<BTUser> UserManager
+
+@{
+    BTUser btUser = await UserManager.GetUserAsync(User);
+    int companyId = User.Identity.GetCompanyId().Value;
+    Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
+    List<Project> projects = await ProjectService.GetUserProjectsAsync(btUser.Id);
+    List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);
+}
+
+<!--===== Page Label  ====-->
+<header class="page-header">
+    <h2>
+        @{
+            @foreach (var role in await UserManager.GetRolesAsync(btUser))
+            {
+                @role
+            }
+        } | @company.Name Assign Roles
+    </h2>
+
+    <!--===== Right Wrapper  ====-->
+    <div class="right-wrapper text-end">
+        <ol class="breadcrumbs">
+            <li>
+                <a href="index.html">
+                    <i class="bx bx-home-alt"></i>
+                </a>
+            </li>
+
+            <li><span>Layouts</span></li>
+
+            <li><span>Dark</span></li>
+        </ol>
+
+        <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a>
+    </div>
+</header>
+
+<section class="card card-transparent">
+    <header class="card-header">
+        <div class="card-actions">
+            <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+            <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+        </div>
+
+        <h2 class="card-title">My Profile</h2>
+    </header>
+    <div class="card-body">
+        <section class="card card-group">
+            <header class="card-header bg-primary w-100">
+
+                <div class="widget-profile-info">
+                    <div class="profile-picture">
+                        <img src="img/!logged-user.jpg">
+                    </div>
+                    <div class="profile-info">
+                        <h4 class="name font-weight-semibold">John Doe</h4>
+                        <h5 class="role">Administrator</h5>
+                        <div class="profile-footer">
+                            <a href="#">(edit profile)</a>
+                        </div>
+                    </div>
+                </div>
+
+            </header>
+            <div id="accordion" class="w-100">
+                <div class="card card-accordion card-accordion-first">
+                    <div class="card-header border-bottom-0">
+                        <h4 class="card-title">
+                            <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1One">
+                                <i class="fas fa-check me-1"></i> Tasks
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse1One" class="accordion-body collapse show">
+                        <div class="card-body">
+                            <ul class="widget-todo-list">
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" checked="" id="todoListItem1" class="todo-check">
+                                        <label class="todo-label" for="todoListItem1"><span>Curabitur ac sem at nibh egestas urabitur ac sem at nibh egestas.</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem2" class="todo-check">
+                                        <label class="todo-label" for="todoListItem2"><span>Lorem ipsum dolor sit amet</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem3" class="todo-check">
+                                        <label class="todo-label" for="todoListItem3"><span>Curabitur ac sem at nibh egestas</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem4" class="todo-check">
+                                        <label class="todo-label" for="todoListItem4"><span>Lorem ipsum dolor sit amet</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem5" class="todo-check">
+                                        <label class="todo-label" for="todoListItem5"><span>Curabitur ac sem at nibh egestas.</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem6" class="todo-check">
+                                        <label class="todo-label" for="todoListItem6"><span>Lorem ipsum dolor sit amet</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-custom checkbox-default">
+                                        <input type="checkbox" id="todoListItem7" class="todo-check">
+                                        <label class="todo-label" for="todoListItem7"><span>Curabitur ac sem at nibh egestas.</span></label>
+                                    </div>
+                                    <div class="todo-actions">
+                                        <a class="todo-remove" href="#">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                            <hr class="solid mt-3 mb-3">
+                            <form method="get" class="form-horizontal form-bordered">
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control">
+                                            <button type="button" class="btn btn-primary" tabindex="-1">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-accordion">
+                    <div class="card-header border-bottom-0">
+                        <h4 class="card-title">
+                            <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1Two">
+                                <i class="fas fa-comment me-1"></i> Messages
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse1Two" class="accordion-body collapse">
+                        <div class="card-body">
+                            <ul class="simple-user-list mb-3">
+                                <li>
+                                    <figure class="image rounded">
+                                        <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
+                                    </figure>
+                                    <span class="title">Joseph Doe Junior</span>
+                                    <span class="message">Lorem ipsum dolor sit.</span>
+                                </li>
+                                <li>
+                                    <figure class="image rounded">
+                                        <img src="img/!sample-user.jpg" alt="Joseph Junior" class="rounded-circle">
+                                    </figure>
+                                    <span class="title">Joseph Junior</span>
+                                    <span class="message">Lorem ipsum dolor sit.</span>
+                                </li>
+                                <li>
+                                    <figure class="image rounded">
+                                        <img src="img/!sample-user.jpg" alt="Joe Junior" class="rounded-circle">
+                                    </figure>
+                                    <span class="title">Joe Junior</span>
+                                    <span class="message">Lorem ipsum dolor sit.</span>
+                                </li>
+                                <li>
+                                    <figure class="image rounded">
+                                        <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
+                                    </figure>
+                                    <span class="title">Joseph Doe Junior</span>
+                                    <span class="message">Lorem ipsum dolor sit.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</section>
 
 <div class="row">
     @foreach (var member in Model)

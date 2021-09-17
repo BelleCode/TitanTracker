@@ -160,13 +160,6 @@ namespace TitanTracker.Services
                                                     .ThenInclude(t => t.DeveloperUser)
                                                 .Include(p => p.Tickets)
                                                     .ThenInclude(t => t.OwnerUser)
-                                                .Include(p => p.Tickets)
-                                                    .ThenInclude(t => t.TicketStatus)
-                                                .Include(p => p.Tickets)
-                                                    .ThenInclude(t => t.TicketPriority)
-                                                .Include(p => p.Tickets)
-                                                    .ThenInclude(t => t.TicketType)
-                                                .Include(p => p.ProjectPriority)
                                                 .ToListAsync();
                 return projects;
             }
@@ -321,15 +314,6 @@ namespace TitanTracker.Services
                                                            .Include(u => u.Projects)
                                                                 .ThenInclude(t => t.Tickets)
                                                                     .ThenInclude(t => t.OwnerUser)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(t => t.Tickets)
-                                                                    .ThenInclude(t => t.TicketPriority)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(t => t.Tickets)
-                                                                    .ThenInclude(t => t.TicketStatus)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(t => t.Tickets)
-                                                                    .ThenInclude(t => t.TicketType)
                                                                     .FirstOrDefaultAsync(u => u.Id == userId)).Projects.ToList();
                 return userProjects;
             }

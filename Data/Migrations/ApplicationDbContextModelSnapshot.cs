@@ -425,7 +425,13 @@ namespace TitanTracker.Data.Migrations
                     b.Property<string>("ProjectManagerId")
                         .HasColumnType("text");
 
+                    b.Property<int>("ProjectPriority")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("ProjectPriorityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectStatus")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("StartDate")
@@ -434,8 +440,6 @@ namespace TitanTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("ProjectPriorityId");
 
                     b.ToTable("Projects");
                 });
@@ -481,13 +485,13 @@ namespace TitanTracker.Data.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TicketPriorityId")
+                    b.Property<int>("TicketPriority")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TicketStatusId")
+                    b.Property<int>("TicketStatus")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TicketTypeId")
+                    b.Property<int>("TicketType")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -505,12 +509,6 @@ namespace TitanTracker.Data.Migrations
                     b.HasIndex("OwnerUserId");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("TicketPriorityId");
-
-                    b.HasIndex("TicketStatusId");
-
-                    b.HasIndex("TicketTypeId");
 
                     b.ToTable("Tickets");
                 });
@@ -802,13 +800,7 @@ namespace TitanTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TitanTracker.Models.ProjectPriority", "ProjectPriority")
-                        .WithMany()
-                        .HasForeignKey("ProjectPriorityId");
-
                     b.Navigation("Company");
-
-                    b.Navigation("ProjectPriority");
                 });
 
             modelBuilder.Entity("TitanTracker.Models.Ticket", b =>
@@ -827,35 +819,11 @@ namespace TitanTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TitanTracker.Models.TicketPriority", "TicketPriority")
-                        .WithMany()
-                        .HasForeignKey("TicketPriorityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TitanTracker.Models.TicketStatus", "TicketStatus")
-                        .WithMany()
-                        .HasForeignKey("TicketStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TitanTracker.Models.TicketType", "TicketType")
-                        .WithMany()
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("DeveloperUser");
 
                     b.Navigation("OwnerUser");
 
                     b.Navigation("Project");
-
-                    b.Navigation("TicketPriority");
-
-                    b.Navigation("TicketStatus");
-
-                    b.Navigation("TicketType");
                 });
 
             modelBuilder.Entity("TitanTracker.Models.TicketAttachment", b =>

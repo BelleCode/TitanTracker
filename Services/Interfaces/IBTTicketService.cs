@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TitanTracker.Models;
+using TitanTracker.Models.Enums;
 
 namespace TitanTracker.Services.Interfaces
 {
@@ -24,11 +25,11 @@ namespace TitanTracker.Services.Interfaces
 
         public Task<List<Ticket>> GetAllTicketsByCompanyAsync(int companyId);
 
-        public Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName);
+        public Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, BTTicketPriority priorityName);
 
-        public Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName);
+        public Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, BTTicketStatus statusName);
 
-        public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName);
+        public Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, BTTicketType typeName);
 
         public Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId);
 
@@ -42,17 +43,17 @@ namespace TitanTracker.Services.Interfaces
         public Task<List<Ticket>> GetProjectTicketsByRoleAsync(string role, string userId, int projectId, int companyId);
 
         // Status Priority and Type
-        public Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId);
+        public Task<List<Ticket>> GetProjectTicketsByStatusAsync(BTTicketStatus statusName, int companyId, int projectId);
 
-        public Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId);
+        public Task<List<Ticket>> GetProjectTicketsByPriorityAsync(BTTicketPriority priorityName, int companyId, int projectId);
 
-        public Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId);
+        public Task<List<Ticket>> GetProjectTicketsByTypeAsync(BTTicketType typeName, int companyId, int projectId);
 
-        // Lookup Services
-        public Task<int?> LookupTicketPriorityIdAsync(string priorityName);
+        //// Lookup Services (no need to query database)
+        //public Task<int?> LookupTicketPriorityIdAsync(BTTicketPriority priorityName);
 
-        public Task<int?> LookupTicketStatusIdAsync(string statusName);
+        //public Task<int?> LookupTicketStatusIdAsync(BTTicketStatus statusName);
 
-        public Task<int?> LookupTicketTypeIdAsync(string typeName);
+        //public Task<int?> LookupTicketTypeIdAsync(BTTicketType typeName);
     }
 }

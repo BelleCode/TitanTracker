@@ -71,7 +71,7 @@
                     @Html.DisplayFor(modelItem => item.Company.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
+                    @item.ProjectPriority.ToString()
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

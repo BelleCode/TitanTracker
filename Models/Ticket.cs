@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using TitanTracker.Models.Enums;
 
 namespace TitanTracker.Models
 {
@@ -36,13 +37,15 @@ namespace TitanTracker.Models
         public int ProjectId { get; set; }
 
         [DisplayName("Ticket Type")]
-        public int TicketTypeId { get; set; }
+        public BTTicketType TicketType { get; set; }
 
         [DisplayName("Ticket Priority")]
-        public int TicketPriorityId { get; set; }
+        public BTTicketPriority TicketPriority { get; set; }
 
         [DisplayName("Ticket Status")]
-        public int TicketStatusId { get; set; }
+        //Enums are always stored as int in the database
+        //That int has meaning only within the code itself
+        public BTTicketStatus TicketStatus { get; set; }
 
         [DisplayName("Ticket Owner")]
         public string OwnerUserId { get; set; }
@@ -55,10 +58,11 @@ namespace TitanTracker.Models
         // One to One Relationship
         public virtual Project Project { get; set; }
 
-        public virtual TicketType TicketType { get; set; }
-        public virtual TicketPriority TicketPriority { get; set; }
-        public virtual TicketStatus TicketStatus { get; set; }
+        //public virtual TicketType TicketType { get; set; }
+        //public virtual TicketPriority TicketPriority { get; set; }
+        //public virtual TicketStatus TicketStatus { get; set; }
         public virtual BTUser OwnerUser { get; set; }
+
         public virtual BTUser DeveloperUser { get; set; }
 
         // One to Many Relationship

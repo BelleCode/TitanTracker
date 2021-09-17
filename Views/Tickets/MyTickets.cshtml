@@ -64,13 +64,13 @@
                     @Html.DisplayFor(modelItem => item.Project.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.Name)
+                    @Html.DisplayFor(modelItem => item.TicketType.ToString())
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                    @Html.DisplayFor(modelItem => item.TicketPriority.ToString())
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                    @Html.DisplayFor(modelItem => item.TicketStatus.ToString())
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.OwnerUser.PreferredName)

@@ -116,9 +116,10 @@
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                    @item.ProjectPriority.ToString()
                 </td>
                 <td>
+                    @item.ProjectStatus.ToString()
                     @*add member code here*@
                     @*Maybe add small icons with images*@
                 </td>

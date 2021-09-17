@@ -62,7 +62,7 @@ namespace TitanTracker.Services
                     try
                     {
                         ticket.DeveloperUserId = userId;
-                        ticket.TicketStatusId = (await LookupTicketStatusIdAsync(BTTicketStatus.Development.ToString())).Value;
+                        ticket.TicketStatus = BTTicketStatus.InDev;
                         await UpdateTicketAsync(ticket);
                     }
                     catch (Exception)
@@ -107,9 +107,6 @@ namespace TitanTracker.Services
                                                  .Include(t => t.Notifications)
                                                  .Include(t => t.DeveloperUser)
                                                  .Include(t => t.OwnerUser)
-                                                 .Include(t => t.TicketStatus)
-                                                 .Include(t => t.TicketPriority)
-                                                 .Include(t => t.TicketType)
                                                  .ToListAsync();
                 return tickets;
             }
@@ -131,15 +128,13 @@ namespace TitanTracker.Services
             //    return tickets;
         }
 
-        public async Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, string priorityName)
+        public async Task<List<Ticket>> GetAllTicketsByPriorityAsync(int companyId, BTTicketPriority priorityName)
         {
             List<Ticket> tickets = new();
 
             try
             {
-                int priorityId = (await LookupTicketPriorityIdAsync(priorityName)).Value;
-
-                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketPriorityId == priorityId).ToList();
+                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketPriority == priorityName).ToList();
                 return tickets;
             }
             catch (Exception)
@@ -148,15 +143,13 @@ namespace TitanTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, string statusName)
+        public async Task<List<Ticket>> GetAllTicketsByStatusAsync(int companyId, BTTicketStatus statusName)
         {
             List<Ticket> tickets = new();
 
             try
             {
-                int statusId = (await LookupTicketStatusIdAsync(statusName)).Value;
-
-                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketStatusId == statusId).ToList();
+                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketStatus == statusName).ToList();
                 return tickets;
             }
             catch (Exception)
@@ -165,15 +158,13 @@ namespace TitanTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, string typeName)
+        public async Task<List<Ticket>> GetAllTicketsByTypeAsync(int companyId, BTTicketType typeName)
         {
             List<Ticket> tickets = new();
 
             try
             {
-                int typeId = (await LookupTicketTypeIdAsync(typeName)).Value;
-
-                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketTypeId == typeId).ToList();
+                tickets = (await GetAllTicketsByCompanyAsync(companyId)).Where(t => t.TicketType == typeName).ToList();
                 return tickets;
             }
             catch (Exception)
@@ -197,9 +188,6 @@ namespace TitanTracker.Services
                                                  .Include(t => t.Notifications)
                                                  .Include(t => t.DeveloperUser)
                                                  .Include(t => t.OwnerUser)
-                                                 .Include(t => t.TicketStatus)
-                                                 .Include(t => t.TicketPriority)
-                                                 .Include(t => t.TicketType)
                                                  .ToListAsync();
                 return tickets;
             }
@@ -209,7 +197,7 @@ namespace TitanTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetProjectTicketsByPriorityAsync(string priorityName, int companyId, int projectId)
+        public async Task<List<Ticket>> GetProjectTicketsByPriorityAsync(BTTicketPriority priorityName, int companyId, int projectId)
         {
             List<Ticket> tickets = new();
 
@@ -239,7 +227,7 @@ namespace TitanTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId)
+        public async Task<List<Ticket>> GetProjectTicketsByStatusAsync(BTTicketStatus statusName, int companyId, int projectId)
         {
             List<Ticket> tickets = new();
 
@@ -254,7 +242,7 @@ namespace TitanTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId)
+        public async Task<List<Ticket>> GetProjectTicketsByTypeAsync(BTTicketType typeName, int companyId, int projectId)
         {
             List<Ticket> tickets = new();
 
@@ -274,9 +262,6 @@ namespace TitanTracker.Services
             try
             {
                 Ticket ticket = await _context.Tickets
-                                              .Include(t => t.TicketPriority)
-                                              .Include(t => t.TicketStatus)
-                                              .Include(t => t.TicketType)
                                               .Include(t => t.Project)
                                               .Include(t => t.DeveloperUser)
                                               .AsNoTracking().FirstOrDefaultAsync(t => t.Id == ticketId);
@@ -293,9 +278,6 @@ namespace TitanTracker.Services
             Ticket ticket = await _context.Tickets.Include(t => t.DeveloperUser)
                 .Include(t => t.OwnerUser)
                 .Include(t => t.Project)
-                .Include(t => t.TicketPriority)
-                .Include(t => t.TicketStatus)
-                .Include(t => t.TicketType)
                 .Include(t => t.Comments)
                     .ThenInclude(t => t.User)
                 .Include(t => t.Attachments)
@@ -342,9 +324,6 @@ namespace TitanTracker.Services
                 Ticket ticket = await _context.Tickets.Include(t => t.DeveloperUser)
                     .Include(t => t.OwnerUser)
                     .Include(t => t.Project)
-                    .Include(t => t.TicketPriority)
-                    .Include(t => t.TicketStatus)
-                    .Include(t => t.TicketType)
                     .Include(t => t.Comments)
                         .ThenInclude(t => t.User)
                     .Include(t => t.Attachments)

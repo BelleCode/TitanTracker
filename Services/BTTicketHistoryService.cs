@@ -81,49 +81,49 @@ namespace TitanTracker.Services
                     }
 
                     // Check Ticket Status
-                    if (oldTicket.TicketStatusId != newTicket.TicketStatusId)
+                    if (oldTicket.TicketStatus != newTicket.TicketStatus)
                     {
                         TicketHistory history = new()
                         {
                             TicketId = newTicket.Id,
                             Property = "TicketStatus",
-                            OldValue = oldTicket.TicketStatus.Name,
-                            NewValue = newTicket.TicketStatus.Name,
+                            OldValue = oldTicket.TicketStatus.ToString(),
+                            NewValue = newTicket.TicketStatus.ToString(),
                             Created = DateTimeOffset.Now,
                             UserId = userId,
-                            Description = $"New Ticket Status: {newTicket.TicketStatus.Name}"
+                            Description = $"New Ticket Status: {newTicket.TicketStatus.ToString()}"
                         };
                         await _context.TicketHistories.AddAsync(history);
                     }
 
                     // Check Ticket Priority
-                    if (oldTicket.TicketPriorityId != newTicket.TicketPriorityId)
+                    if (oldTicket.TicketPriority != newTicket.TicketPriority)
                     {
                         TicketHistory history = new()
                         {
                             TicketId = newTicket.Id,
                             Property = "TicketPriority",
-                            OldValue = oldTicket.TicketPriority.Name,
-                            NewValue = newTicket.TicketPriority.Name,
+                            OldValue = oldTicket.TicketPriority.ToString(),
+                            NewValue = newTicket.TicketPriority.ToString(),
                             Created = DateTimeOffset.Now,
                             UserId = userId,
-                            Description = $"New Ticket Priority: {newTicket.TicketPriority.Name}"
+                            Description = $"New Ticket Priority: {newTicket.TicketPriority.ToString()}"
                         };
                         await _context.TicketHistories.AddAsync(history);
                     }
 
                     // Check Ticket Type
-                    if (oldTicket.TicketTypeId != newTicket.TicketTypeId)
+                    if (oldTicket.TicketType != newTicket.TicketType)
                     {
                         TicketHistory history = new()
                         {
                             TicketId = newTicket.Id,
                             Property = "TicketType",
-                            OldValue = oldTicket.TicketType.Name,
-                            NewValue = newTicket.TicketType.Name,
+                            OldValue = oldTicket.TicketType.ToString(),
+                            NewValue = newTicket.TicketType.ToString(),
                             Created = DateTimeOffset.Now,
                             UserId = userId,
-                            Description = $"New Ticket Type: {newTicket.TicketType.Name}"
+                            Description = $"New Ticket Type: {newTicket.TicketType.ToString()}"
                         };
                         await _context.TicketHistories.AddAsync(history);
                     }

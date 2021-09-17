@@ -1,16 +1,22 @@
 ﻿@model TitanTracker.Models.Ticket
-
+@using TitanTracker.Models.Enums
+@using TitanTracker.Extensions
 @using Microsoft.AspNetCore.Identity
 @using TitanTracker.Services.Interfaces
+@inject IBTCompanyInfoService CompanyInfoService
 @inject IBTFileService BTFileService
 @inject IBTProjectService ProjectService
 @inject IBTTicketService TicketService
+@inject IBTTicketHistoryService TicketHistory
 @inject UserManager<BTUser> UserManager
 
 @{
     BTUser btUser = await UserManager.GetUserAsync(User);
+    int companyId = User.Identity.GetCompanyId().Value;
+    Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
     BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
-    //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
+    List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);   // returns list of tixs for person logged in
+                                                                                                //BTUser developer = await TicketService.GetTicketsByRoleAsync(Model.Id);
 }
 
 <h5>Ticket ID: @Model.Id</h5>
@@ -24,7 +30,7 @@
                 @role
             }
         }
-        |  Ticket Details : @Model.Project.Name
+        |  Ticket @Model.Id : @Model.Project.Name
     </h2>
     <div class="right-wrapper text-end">
         <ol class="breadcrumbs">
@@ -44,7 +50,7 @@
 </header>
 
 <div>
-    <h3>Project :   @Model.Project.Name</h3>
+    <h3>Ticket Details</h3>
     <hr />
 
     @*<div>
@@ -75,13 +81,12 @@
                         <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
                         <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
                     </div>
-
-                    <h2 class="card-title">Projects Stats</h2>
+                    @*===== Ticket Detail Stats =====*@
                 </header>
                 <div class="card-body">
-                    <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
-                        <div class="progress-bar progress-bar-primary progress progress-sm progress-half-rounded m-0 mt-1 light" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                            100%
+                    <div class="progress light m-2">
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                            25% Complete
                         </div>
                     </div>
                     <table class="table table-responsive-md table-striped mb-0">
@@ -227,13 +232,9 @@
     <div class="row mb-3">
         <section class="card col-3">
             <header class="card-header">
-                <div class="card-actions">
-                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                </div>
 
                 <h2 class="card-title">
-                    <span class="badge badge-primary font-weight-normal va-middle p-2 me-e">1</span>
+                    <span class="badge badge-primary font-weight-normal vakata-context-left p-2 me-e">1</span>
                     <span class="va-middle">Program Manager</span>
                 </h2>
             </header>
@@ -244,8 +245,11 @@
                             <figure class="image rounded">
                                 <img src="~/img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
                             </figure>
-                            <span class="title">Joseph Doe Junior</span>
-                            <span class="message truncate">Lorem ipsum dolor sit.</span>
+                            @foreach (var ticket in tickets)
+                            {
+                                <span class="title">PUT INFO HERE</span>
+                                <span class="message truncate"></span>
+                            }
                         </li>
                     </ul>
                     <hr class="dotted short">
@@ -263,10 +267,6 @@
         </section>
         <section class="card col-3 mt-0">
             <header class="card-header">
-                <div class="card-actions">
-                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                </div>
 
                 <h2 class="card-title">
                     <span class="badge badge-primary font-weight-normal va-middle p-2 me-e">1</span>
@@ -280,7 +280,7 @@
                             <figure class="image rounded">
                                 <img src="~/img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
                             </figure>
-                            <span class="title">Joseph Doe Junior</span>
+                            <span class="title">@projectManager?.PreferredName</span>
                             <span class="message truncate">Lorem ipsum dolor sit.</span>
                         </li>
                     </ul>
@@ -299,14 +299,13 @@
         </section>
         <section class="card col-3 mt-0">
             <header class="card-header">
-                <div class="card-actions">
-                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                </div>
 
                 <h2 class="card-title">
                     <span class="badge badge-primary font-weight-normal va-middle p-2 me-e">3</span>
-                    <span class="va-middle">Developer</span>
+                    @foreach (var ticket in tickets)
+                    {
+                        <span class="va-middle">@ticket.DeveloperUser?.PreferredName</span>
+                    }
                 </h2>
             </header>
             <div class="card-body">

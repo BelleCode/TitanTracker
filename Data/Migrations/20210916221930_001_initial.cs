@@ -162,6 +162,9 @@ namespace TitanTracker.Data.Migrations
                     StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     ProjectPriorityId = table.Column<int>(type: "integer", nullable: true),
+                    AdminId = table.Column<string>(type: "text", nullable: true),
+                    ProjectManagerId = table.Column<string>(type: "text", nullable: true),
+                    FileName = table.Column<string>(type: "text", nullable: true),
                     FileData = table.Column<byte[]>(type: "bytea", nullable: true),
                     FileContentType = table.Column<string>(type: "text", nullable: true),
                     Archived = table.Column<bool>(type: "boolean", nullable: false)
@@ -302,13 +305,14 @@ namespace TitanTracker.Data.Migrations
                     JoinDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CompanyToken = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<int>(type: "integer", nullable: false),
-                    ProjectId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectId = table.Column<int>(type: "integer", nullable: false),
                     InviteeId = table.Column<string>(type: "text", nullable: true),
                     InvitorId = table.Column<string>(type: "text", nullable: true),
                     InviteeEmail = table.Column<string>(type: "text", nullable: true),
                     InviteeFirstName = table.Column<string>(type: "text", nullable: true),
                     InviteeLastName = table.Column<string>(type: "text", nullable: true),
-                    IsValid = table.Column<bool>(type: "boolean", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: true),
+                    IsValid = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,11 +336,11 @@ namespace TitanTracker.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Invites_Projects_ProjectId1",
+                        name: "FK_Invites_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -351,9 +355,9 @@ namespace TitanTracker.Data.Migrations
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     Archived = table.Column<bool>(type: "boolean", nullable: false),
                     ProjectId = table.Column<int>(type: "integer", nullable: false),
-                    TicketTypeId = table.Column<int>(type: "integer", nullable: false),
-                    TicketPriorityId = table.Column<int>(type: "integer", nullable: false),
-                    TicketStatusId = table.Column<int>(type: "integer", nullable: false),
+                    TicketType = table.Column<int>(type: "integer", nullable: false),
+                    TicketPriority = table.Column<int>(type: "integer", nullable: false),
+                    TicketStatus = table.Column<int>(type: "integer", nullable: false),
                     OwnerUserId = table.Column<string>(type: "text", nullable: true),
                     DeveloperUserId = table.Column<string>(type: "text", nullable: true)
                 },
@@ -376,24 +380,6 @@ namespace TitanTracker.Data.Migrations
                         name: "FK_Tickets_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tickets_TicketPriorities_TicketPriorityId",
-                        column: x => x.TicketPriorityId,
-                        principalTable: "TicketPriorities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tickets_TicketStatuses_TicketStatusId",
-                        column: x => x.TicketStatusId,
-                        principalTable: "TicketStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tickets_TicketTypes_TicketTypeId",
-                        column: x => x.TicketTypeId,
-                        principalTable: "TicketTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -445,7 +431,7 @@ namespace TitanTracker.Data.Migrations
                     Description = table.Column<string>(type: "text", nullable: true),
                     TicketId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: true),
-                    FormFile = table.Column<string>(type: "text", nullable: true),
+                    FileName = table.Column<string>(type: "text", nullable: true),
                     FileData = table.Column<byte[]>(type: "bytea", nullable: true),
                     FileContentType = table.Column<string>(type: "text", nullable: true)
                 },
@@ -662,21 +648,6 @@ namespace TitanTracker.Data.Migrations
                 name: "IX_Tickets_ProjectId",
                 table: "Tickets",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tickets_TicketPriorityId",
-                table: "Tickets",
-                column: "TicketPriorityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tickets_TicketStatusId",
-                table: "Tickets",
-                column: "TicketStatusId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tickets_TicketTypeId",
-                table: "Tickets",
-                column: "TicketTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -715,6 +686,15 @@ namespace TitanTracker.Data.Migrations
                 name: "TicketHistories");
 
             migrationBuilder.DropTable(
+                name: "TicketPriorities");
+
+            migrationBuilder.DropTable(
+                name: "TicketStatuses");
+
+            migrationBuilder.DropTable(
+                name: "TicketTypes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -725,15 +705,6 @@ namespace TitanTracker.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Projects");
-
-            migrationBuilder.DropTable(
-                name: "TicketPriorities");
-
-            migrationBuilder.DropTable(
-                name: "TicketStatuses");
-
-            migrationBuilder.DropTable(
-                name: "TicketTypes");
 
             migrationBuilder.DropTable(
                 name: "Companies");

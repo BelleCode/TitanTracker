@@ -35,10 +35,7 @@ namespace TitanTracker.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser)
-                                                       .Include(t => t.OwnerUser)
-                                                       .Include(t => t.TicketPriority)
-                                                       .Include(t => t.TicketStatus)
-                                                       .Include(t => t.TicketType);
+                                                       .Include(t => t.OwnerUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -72,9 +69,6 @@ namespace TitanTracker.Controllers
             var ticket = await _context.Tickets
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.OwnerUser)
-                .Include(t => t.TicketPriority)
-                .Include(t => t.TicketStatus)
-                .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
@@ -125,7 +119,7 @@ namespace TitanTracker.Controllers
                 ticket.Created = DateTimeOffset.Now;
                 ticket.OwnerUserId = btUser.Id;
 
-                ticket.TicketStatusId = (await _ticketService.LookupTicketStatusIdAsync(BTTicketStatus.New.ToString())).Value;
+                ticket.TicketStatus = BTTicketStatus.New;
 
                 await _ticketService.AddNewTicketAsync(ticket);
 
@@ -156,9 +150,6 @@ namespace TitanTracker.Controllers
                 return NotFound();
             }
 
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -200,9 +191,6 @@ namespace TitanTracker.Controllers
             }
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
             ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.OwnerUserId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -217,9 +205,6 @@ namespace TitanTracker.Controllers
             var ticket = await _context.Tickets
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.OwnerUser)
-                .Include(t => t.TicketPriority)
-                .Include(t => t.TicketStatus)
-                .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {

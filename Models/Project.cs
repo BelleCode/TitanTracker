@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TitanTracker.Models.Enums;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,10 +61,15 @@ namespace TitanTracker.Models
         [DisplayName("Archived")]
         public bool Archived { get; set; }
 
+        [DisplayName("Project Status")]
+        public BTProjectStatus ProjectStatus { get; set; }
+
+        [DisplayName("Project Priority")]
+        public BTProjectPriority ProjectPriority { get; set; }
+
         // One to One Relationship
         public virtual Company Company { get; set; }
 
-        public virtual ProjectPriority ProjectPriority { get; set; }
         public virtual ICollection<BTUser> Members { get; set; } = new HashSet<BTUser>();
 
         public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();

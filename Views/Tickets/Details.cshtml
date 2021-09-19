@@ -15,11 +15,10 @@
     int companyId = User.Identity.GetCompanyId().Value;
     Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
     BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
-    List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);   // returns list of tixs for person logged in
-                                                                                                //BTUser developer = await TicketService.GetTicketsByRoleAsync(Model.Id);
+    List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);   
+    // returns list of tixs for person logged in
+    //BTUser developer = await TicketService.GetTicketsByRoleAsync(Model.Id);
 }
-
-<h5>Ticket ID: @Model.Id</h5>
 
 <header class="page-header">
     <h2>
@@ -30,7 +29,7 @@
                 @role
             }
         }
-        |  Ticket @Model.Id : @Model.Project.Name
+        |  Ticket: @Model.Project.Name
     </h2>
     <div class="right-wrapper text-end">
         <ol class="breadcrumbs">
@@ -50,68 +49,145 @@
 </header>
 
 <div>
+    <div class="row">
+        <div class="col-6">
+
+        </div>
+        <div class="col-6">
+                
+        </div>
+    </div>
     <h3>Ticket Details</h3>
-    <hr />
-
-    @*<div>
-            <form asp-action="Create" asp-controller="TicketAttachments" enctype="multipart/form-data" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="@Model.Id" name="TicketId">
-
-                <div class="media-body ml-3">
-                    <label class="form-label d-block mb-2">Add Attachment</label>
-                    <label>
-                        Description
-                        <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
-                    </label><br />
-                    <label class="btn btn-outline-primary btn-sm">
-                        <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" />
-                    </label>
-                    <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
-                </div>
-            </form>
-        </div>*@
-
+    <hr/>
+      
     <div class="row">
         <div class="col-xl-6">
-            @*===== Project Phase =====*@
-            <section class="card">
-                <header class="card-header card-header-transparent">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                    </div>
+            <div class="row">
+                @*===== Ticket Details Phase =====*@
+                <section class="card">
                     @*===== Ticket Detail Stats =====*@
-                </header>
-                <div class="card-body">
-                    <div class="progress light m-2">
-                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
-                            25% Complete
+                    <div class="card-body">
+                        <div class="progress light m-2">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
+                                25% Complete
+                            </div>
                         </div>
+                        <table class="table table-responsive-md table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                    <th class="col-6">
+                                        @Html.DisplayNameFor(model => model.Description)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Created)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>@Html.DisplayFor(model => model.Id)</th>
+                                    <td>@Html.DisplayFor(model => model.Description)</td>
+                                    <td>@Html.DisplayFor(model => model.Created)</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table class="table table-responsive-md table-striped mb-0">
-                        <thead>
-                            <tr>
-                                <th class="col-6">@Html.DisplayNameFor(model => model.Description)</th>
-                                <th>@Html.DisplayNameFor(model => model.Created)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>@Html.DisplayFor(model => model.Description)</td>
-                                <td>@Html.DisplayFor(model => model.Created)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </section>
+            </div>
+            <div class="row">
+                @*===== Project, Ticket Option Widgets =====*@
+                <div class="col-xl-6">
+                    <section class="card card-featured-left card-featured-primary mb-3">
+                        <div class="card-body">
+                            <div class="widget-summary widget-summary-col-icon">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-primary">
+                                        <i class="fas fa-project-diagram"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <div class="info">
+                                            @if (Model.Project.Name != null)
+                                            {
+                                                <h2 class="title">@Model.Project.Name</h2>
+                                            }
+                                        </div>
+                                    </div>
+                                    @*<div class="summary-footer">
+
+                            </div>*@
+                                    <div class="card-footer card-footer-btn-group">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a href="# " class="text-color-success"><i class="fa fa-info me-1 text-4 top-3 position-relative text-color-info"></i>Project Details</a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger "></i>Required</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                <div>
-                    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-                    <a asp-action="Index">Back to List</a>
+                <div class="col-xl-6">
+                    <section class="card card-featured-left card-featured-secondary">
+                        <div class="card-body">
+                            <div class="widget-summary">
+                                <div class="widget-summary-col widget-summary-col-icon">
+                                    <div class="summary-icon bg-secondary">
+                                        <i class="fas fa-bug"></i>
+                                    </div>
+                                </div>
+                                <div class="widget-summary-col">
+                                    <div class="summary">
+                                        <h4 class="title">Tickets Assigned to You</h4>
+                                        <div class="info">
+                                            @if (tickets.Count != 0)
+                                            {
+                                                <strong class="amount">@tickets.Count</strong>
+                                                <span class="text-danger">
+                                                    (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="card-footer card-footer-btn-group">
+                                        <div class="card-footer card-footer-btn-group">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <a href="# " class="text-color-success">
+                                                    <i class="text-color-success fa fa-ticket-alt me-1 text-4 top-3 position-relative text-color-success">
+                                                    </i>
+                                                    Mine
+                                                    </a>
+                                                </div>
+                                            <div class="col-4">
+                                                <a href="#" class="text-color-primary">
+                                                    <i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary">
+                                                    </i>
+                                                    Reassign
+                                                </a>
+                                            </div>
+                                            <div class="col-4">
+                                                <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </section>
+            </div>
         </div>
         @*===== Project Status, Tickets in Project, Project Tickets Assigned to You, Staff =====*@
-        <div class="col-6">
+        <div class="col-xl-6">
             <div class="row mb-3" ">
                 <div class="col-xl-6">
                     <section class="card card-featured-left card-featured-danger mb-3">
@@ -245,11 +321,6 @@
                             <figure class="image rounded">
                                 <img src="~/img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
                             </figure>
-                            @foreach (var ticket in tickets)
-                            {
-                                <span class="title">PUT INFO HERE</span>
-                                <span class="message truncate"></span>
-                            }
                         </li>
                     </ul>
                     <hr class="dotted short">
@@ -561,7 +632,7 @@
                                             <p class="text-muted mb-0">76 months ago.</p>
                                             <p>
                                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas hendrerit augue at leo viverra, aliquam egestas lectus laoreet. Donec vehicula vestibulum ipsum, tincidunt ultrices elit suscipit ac. Sed eget risus laoreet, varius nibh id, luctus ligula. Nulla facilisi. <span class="text-primary">#awesome</span>
-                                            </p>
+                                            </p> 
                                         </div>
                                     </li>
                                     <li>

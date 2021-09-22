@@ -12,10 +12,12 @@ namespace TitanTracker.Services
     public class BTCompanyInfoService : IBTCompanyInfoService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTRolesService _rolesService;
 
-        public BTCompanyInfoService(ApplicationDbContext context)
+        public BTCompanyInfoService(ApplicationDbContext context, IBTRolesService rolesService)
         {
             _context = context;
+            _rolesService = rolesService;
         }
 
         public async Task<List<BTUser>> GetAllMembersAsync(int companyId)
@@ -31,6 +33,23 @@ namespace TitanTracker.Services
             {
                 throw;
             }
+        }
+
+        public async Task<List<BTUser>> GetAllMembersInRoleAsync(int companyId, string role)
+        {
+            var users = await GetAllMembersAsync(companyId);
+
+            var inRole = new List<BTUser>();
+
+            foreach (var member in users)
+            {
+                if(await _rolesService.IsUserInRoleAsync(member, role))
+                {
+                    inRole.Add(member);
+                }
+            }
+
+            return inRole;
         }
 
         public async Task<List<Project>> GetAllProjectsAsync(int companyId)

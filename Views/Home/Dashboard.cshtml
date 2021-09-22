@@ -8,6 +8,7 @@
 @inject IBTProjectService ProjectService
 @inject IBTTicketService TicketService
 @inject UserManager<BTUser> UserManager
+@inject IBTRolesService RolesService
 
 @{
     BTUser btUser = await UserManager.GetUserAsync(User);
@@ -49,196 +50,298 @@
 
 <!--===== 1st Row, Block Widgets: Projects, Tickets ====-->
 
-<div class="col-xl-12">
-    <div class="row mb-3">
-        <div class="col-xl-3">
-            <section class="card card-featured-left card-featured-primary mb-3">
-                <div class="card-body">
-                    <div class="widget-summary">
-                        <div class="widget-summary-col widget-summary-col-icon">
-                            <div class="summary-icon bg-primary">
-                                <i class="fas fa-project-diagram"></i>
-                            </div>
-                        </div>
-                        <div class="widget-summary-col">
-                            <div class="summary">
-                                <h4 class="title">
-                                    Your Active Projects
-                                </h4>
-                                <div class="info">
-                                    @if (Model.Projects.Count != 0)
-                                    {
-                                        <strong class="amount">@Model.Projects.Count</strong>
-                                        <span class="text-primary">
-                                            @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
-                                            (@Model.Projects.Where(p => p.ProjectStatus switch
-                                          {
-                                              BTProjectStatus.Ideation or
-                                              BTProjectStatus.Requirements or
-                                              BTProjectStatus.Design => true,
-                                              _ => false
-                                          }).Count() in planning)
-                                        </span>
-                                    }
+<div class="row mb-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-primary mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-primary">
+                                    <i class="fas fa-project-diagram"></i>
                                 </div>
                             </div>
-                            <div class="card-footer card-footer-btn-group">
-                                <a href="# " class="text-color-success"><i class="fa fa-project-diagram me-1 text-4 top-3 position-relative text-color-info"></i>Mine</a>
-                                <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
-                                <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Required</a>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">
+                                        Your Active Projects
+                                    </h4>
+                                    <div class="info">
+                                        @if (btUser.Projects.Count != 0)
+                                        {
+                                            <strong class="amount">@btUser.Projects.Count</strong>
+                                            <span class="text-primary">
+                                                @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
+                                                (@Model.Projects.Where(p => p.ProjectStatus switch
+                                         {
+                                             BTProjectStatus.Ideation or
+                                             BTProjectStatus.Requirements or
+                                             BTProjectStatus.Design => true,
+                                             _ => false
+                                         }).Count() in planning)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fa fa-project-diagram me-1 text-4 top-3 position-relative text-color-info"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Required</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
-        <div class="col-xl-3">
-            <section class="card card-featured-left card-featured-danger mb-3">
-                <div class="card-body">
-                    <div class="widget-summary">
-                        <div class="widget-summary-col widget-summary-col-icon">
-                            <div class="summary-icon bg-danger">
-                                <i class="fas fa-bug"></i>
-                            </div>
-                        </div>
-                        <div class="widget-summary-col">
-                            <div class="summary">
-                                <h4 class="title">Tickets Assigned to You</h4>
-                                <div class="info">
-                                    @if (tickets.Count != 0)
-                                    {
-                                        <strong class="amount">@tickets.Count</strong>
-                                        <span class="text-danger">
-                                            (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
-                                        </span>
-                                    }
+                </section>
+            </div>
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-danger mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-danger">
+                                    <i class="fas fa-bug"></i>
                                 </div>
                             </div>
-                            <div class="card-footer card-footer-btn-group">
-                                <a href="# " class="text-color-success"><i class="fa fa-ticket-alt me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
-                                <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
-                                <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Defect Tickets Assigned to You</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fa fa-ticket-alt me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
         </div>
-        <div class="col-xl-6">
+        <!--===== OPTIONAL !!!!: 1.5st Row, Block Widgets: Projects, Tickets ====-->
+        <div class="row">
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-primary mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-primary">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Your Features (Not active)</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fas fa-lightbulb me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-info mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-info">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Feature Work Items(Not Active)</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fas fa-briefcase me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
-    <!--===== 2nd Row, Block Widgets: Projects, Tickets ====-->
+    <div class="col-6">
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">Bar Chart: Horizontal Chart</h2>
+            </header>
+            <div class="card-body">
+                <strong>
+                    <select class="form-control" id="projectSelector">
+                        @if (Model.Projects.Count != 0)
+                        {
+                            <option value="Porto Admin" selected>Porto Admin</option>
+                            <option value="Porto Drupal">Porto Drupal</option>
+                            <option value="Porto Wordpress">Porto Wordpress</option>
+                        }
+                    </select>
+                </strong>
+                <div id="ChartistHorizontalChart" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+                <!-- See: js/examples/examples.charts.js for the example code. -->
+            </div>
+        </section>
+    </div>
+</div>
 
-    <div class="row mb-3">
-        <div class="col-xl-6">
-            <section class="card">
-                <header class="card-header">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                    </div>
-
-                    <h2 class="card-title"></h2>
-                </header>
-                <div class="card-body">
-                    <table class="table table-responsive-md table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th><i class="fa fa-users"></i></th>
-                                <th>Role</th>
-                                <th>Total</th>
-                                <th>Active</th>
-                                <th>Unassigned</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+<!--===== 3rd Row Diagrams: Priority Projects, Number of Tickets in Each Project ====-->
+<!--===== 3rd Row, Staff Breakdown: Roles & Members, Staff info and Assignments ====-->
+<hr />
+<div class="row mb-3">
+    <div class="col-xl-4">
+        <!--===== Table: Role Count ====-->
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">@company.Name : Role Count</h2>
+            </header>
+            <div class="card-body">
+                <table class="table table-responsive-md table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><i class="fa fa-users"></i></th>
+                            <th>Role</th>
+                            <th>Count</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Enum.GetValues(typeof(Roles)))
+                        {
                             <tr>
                                 <td><i class="fa fa-user-cog"></i></td>
-                                <td>Admins</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>@role.</td>
+                                <td>@((await CompanyInfoService.GetAllMembersInRoleAsync(companyId, role.ToString())).Count)</td>
                                 <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                    <a href=""><i class="fas fa-exchange-alt"></i></a>
                                     <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td><i class="fa fa-chalkboard-teacher"></i></td>
-                                <td>Program Manager</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-folder"></i></td>
-                                <td>Project Manager</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa fa-file-code"></i></td>
-                                <td>Developer</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fas fa-comments"></i></td>
-                                <td>Client Submitters</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
+    <div class="col-xl-8">
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">@company.Name : Staff Info</h2>
+            </header>
+            <div class="card-body">
+                <table class="table table-responsive-md table-hover mb-0" id="StaffInfo">
+                    <thead>
+                        <tr>
+                            <th><i class="fa fa-users"></i></th>
+                            <th>Name</th>
+                            <th>Call Me</th>
+                            <th>Role</th>
+                            <th># Projects</th>
+                            <th># Feature</th>
+                            <th># Work Items</th>
+                            <th># Tickets</th>
+                            <th># Pri-0</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var staff in company.Members)
+                        {
+                            var staffTickets = await TicketService.GetTicketsByUserIdAsync(staff.Id, companyId);
+                            <tr>
+                                <td>
+                                    @if (staff.AvatarFileData != null)
+                                    {
+                                        <img id="imageFileData" style="width:40px; height:40px" class="img-fluid img-thumbnail" src="data:image/*;base64, @(Convert.ToBase64String(staff.AvatarFileData))" alt="" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imageFileData" style="width: 40px; height: 40px; object-fit: cover" class="img-flud img-thumbnail rounded" src="~/img/Placeholder.png" />
+                                    }
+                                </td>
+                                <td>@staff.FullName</td>
+                                <td>@staff.PreferredName</td>
+                                <td>@(new System.Text.StringBuilder().AppendJoin(", ", (await RolesService.GetUsersRoleAsync(staff))))</td>
+                                <td>@staff.Projects.Count()</td>
+                                <td>@staff.Projects.Count()</td>
+                                <td>@staffTickets.Count()</td>
+                                <td>@staffTickets.Count()</td>
+                                <td>@staffTickets.Where(t => t.TicketPriority == 0).Count()</td>
+                                <td class="actions-hover actions-fade">
+                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
 
+<hr>
 
-
-    <hr>
-
-
-    <!--===== Company Stats  ====-->
+<!--===== Company Stats  ====-->
+<div class="row">
     <div class="col-xl-12">
         @if ((User.IsInRole(Roles.Admin.ToString())) || User.IsInRole(Roles.DemoUser.ToString()) || User.IsInRole(Roles.ProgramManager.ToString()) || User.IsInRole(Roles.ProjectManager.ToString()))
         {
             <section class="card">
-                <header class="card-header card-header-transparent">
+                <header class="card-header card-header-dark">
                     <h2 class="card-title">Project Stats</h2>
                 </header>
                 <div class="card-body">
-                    <table class="table table-responsive-md table-striped mb-0" id="ProjectsTable">
+                    <table class="table table-responsive-md table-hover table-striped mb-0" id="ProjectsTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Project</th>
-                                <th>State</th>
+                                <th>Ideation</th>
+                                <th>Requirements</th>
+                                <th>Design</th>
+                                <th>Development</th>
+                                <th>Testing</th>
+                                <th>Deployment</th>
+                                <th>Maintenance</th>
                                 <th>Priority</th>
                                 <th></th>
                                 <th>Current Status</th>
                                 <th>Progress</th>
+                                <th>action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,6 +361,10 @@
                                             </div>
                                         </div>
                                     </td>
+                                    <td class="actions-hover actions-fade">
+                                        <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -266,6 +373,46 @@
             </section>
         }
     </div>
+    <section class="card">
+        <header class="card-header card-header-transparent">
+            <h2 class="card-title">Project Stats</h2>
+        </header>
+        <div class="card-body">
+            <table class="table table-responsive-md table-striped mb-0" id="ProjectsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Project</th>
+                        <th>State</th>
+                        <th>Priority</th>
+                        <th></th>
+                        <th>Current Status</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var project in Model.Projects)
+                    {
+                        <tr>
+                            <td>@project.Id</td>
+                            <td>@project.Name</td>
+                            <td>@project.ProjectStatus</td>
+                            <td>@project.ProjectPriority</td>
+                            <td></td>
+                            <td><span class="badge badge-success">Success</span></td>
+                            <td>
+                                <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
+                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                        100%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
 
 <hr />
@@ -301,489 +448,442 @@
                         </h2>
                     </div>
                 </div>
-                <!--===== Liquid Meter ====-->
-                <div class="col-xl-4 text-center">
-                    <h2 class="card-title mt-3">Sales Goal</h2>
-                    <div class="liquid-meter-wrapper liquid-meter-sm mt-3">
-                        <div class="liquid-meter">
-                            <meter min="0" max="100" value="35" id="meterSales"></meter>
-                        </div>
-                        <div class="liquid-meter-selector mt-4 pt-1" id="meterSalesSel">
-                            <a href="#" data-val="35" class="active">Monthly Goal</a>
-                            <a href="#" data-val="28">Annual Goal</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 </div>
 
-<div class="col-lg-6">
-    <div class="row mb-3">
-        <div class="col-xl-6">
-        </div>
-    </div>
+<!--===== Tickets Table ====-->
+<div class="row pt-12">
+    <div class="col-lg-12">
+        <section class="card">
+            <header class="card-header">
+                <h2 class="card-title">Tickets</h2>
+                <p class="card-subtitle">It's easy to create custom graphs on Porto Admin Template, there are several graph types that you can use.</p>
+            </header>
+            <div class="card-body">
 
-    <div class="row">
-        <div class="col-lg-6 mb-3">
-        </div>
-    </div>
-
-
-    <!--===== Tickets Table ====-->
-    <div class="row pt-12">
-        <div class="col-lg-12">
-            <section class="card">
-                <header class="card-header">
-                    <h2 class="card-title">Tickets</h2>
-                    <p class="card-subtitle">It's easy to create custom graphs on Porto Admin Template, there are several graph types that you can use.</p>
-                </header>
-                <div class="card-body">
-
-                    <!-- Tickets Table -->
-                    <div>
-                        <div class="mb-3">
-                            <button id="addToTable" class="btn btn-danger fas fa-bug"> Submit a Ticket <i class="fas fa-plus"></i></button>
-                        </div>
-                        <table class="table table-bordered table-striped mb-0" id="TicketsTable">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Title
-                                    </th>
-                                    <th>
-                                        Description
-                                    </th>
-                                    <th>
-                                        Created On
-                                    </th>
-                                    <th>
-                                        Last Updated
-                                    </th>
-                                    <th>
-                                        Is it Archived
-                                    </th>
-                                    <th>
-                                        ProjectId
-                                    </th>
-                                    <th>
-                                        Ticket Type
-                                    </th>
-                                    <th>
-                                        TicketPriority
-                                    </th>
-                                    <th>
-                                        TicketStatus
-                                    </th>
-                                    <th>
-                                        Creator
-                                    </th>
-                                    <th>
-                                        DeveloperUser
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var ticket in tickets)
-                                {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.Title)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.Description)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.Created)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.Updated)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.Archived)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.ProjectId)
-                                        </td>
-                                        <td>
-                                            @ticket.TicketType.ToString()
-                                        </td>
-                                        <td>
-                                            @ticket.TicketPriority.ToString()
-                                        </td>
-                                        <td>
-                                            @ticket.TicketStatus.ToString()
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.OwnerUser.PreferredName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => ticket.DeveloperUser.PreferredName)
-                                        </td>
-                                        <td class="actions">
-                                            <a class="hidden on-editing save-row"><i class="fas fa-save"></i></a>
-                                            <a class="hidden on-editing cancel-row"><i class="fas fa-times"></i></a>
-                                            <a class="on-default edit-row" asp-action="Edit" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-pencil-alt"></i></a>
-                                            <a class="on-default remove-row" asp-action="Delete" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-trash-alt"></i></a>
-                                            <a class="on-default remove-row" asp-action="Details" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-info-circle"></i></a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                <!-- Tickets Table -->
+                <div>
+                    <div class="mb-3">
+                        <button id="addToTable" class="btn btn-danger fas fa-bug"> Submit a Ticket <i class="fas fa-plus"></i></button>
                     </div>
+                    <table class="table table-bordered table-striped mb-0" id="TicketsTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Created On
+                                </th>
+                                <th>
+                                    Last Updated
+                                </th>
+                                <th>
+                                    Is it Archived
+                                </th>
+                                <th>
+                                    ProjectId
+                                </th>
+                                <th>
+                                    Ticket Type
+                                </th>
+                                <th>
+                                    TicketPriority
+                                </th>
+                                <th>
+                                    TicketStatus
+                                </th>
+                                <th>
+                                    Creator
+                                </th>
+                                <th>
+                                    DeveloperUser
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var ticket in tickets)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.Created)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.Updated)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.Archived)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.ProjectId)
+                                    </td>
+                                    <td>
+                                        @ticket.TicketType.ToString()
+                                    </td>
+                                    <td>
+                                        @ticket.TicketPriority.ToString()
+                                    </td>
+                                    <td>
+                                        @ticket.TicketStatus.ToString()
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.OwnerUser.PreferredName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => ticket.DeveloperUser.PreferredName)
+                                    </td>
+                                    <td class="actions">
+                                        <a class="hidden on-editing save-row"><i class="fas fa-save"></i></a>
+                                        <a class="hidden on-editing cancel-row"><i class="fas fa-times"></i></a>
+                                        <a class="on-default edit-row" asp-action="Edit" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-pencil-alt"></i></a>
+                                        <a class="on-default remove-row" asp-action="Delete" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-trash-alt"></i></a>
+                                        <a class="on-default remove-row" asp-action="Details" asp-controller="Ticket" asp-route-id="@ticket.Id"><i class="fas fa-info-circle"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
     </div>
+</div>
 
-    <div class="row pt-4 mt-2">
-        <div class="col-lg-6 col-xl-3">
-            <section class="card card-transparent">
-                <header class="card-header">
+<div class="row pt-4 mt-2">
+    <div class="col-lg-6 col-xl-3">
+        <section class="card card-transparent">
+            <header class="card-header">
 
+                <h2 class="card-title">My Profile</h2>
+            </header>
+            <div class="card-body">
+                <section class="card card-group">
+                    <header class="card-header bg-primary w-100">
 
-                    <h2 class="card-title">My Profile</h2>
-                </header>
-                <div class="card-body">
-                    <section class="card card-group">
-                        <header class="card-header bg-primary w-100">
-
-                            <div class="widget-profile-info">
-                                <div class="profile-picture">
-                                    <img src="img/!logged-user.jpg">
-                                </div>
-                                <div class="profile-info">
-                                    <h4 class="name font-weight-semibold">John Doe</h4>
-                                    <h5 class="role">Administrator</h5>
-                                    <div class="profile-footer">
-                                        <a href="#">(edit profile)</a>
-                                    </div>
+                        <div class="widget-profile-info">
+                            <div class="profile-picture">
+                                <img src="img/!logged-user.jpg">
+                            </div>
+                            <div class="profile-info">
+                                <h4 class="name font-weight-semibold">John Doe</h4>
+                                <h5 class="role">Administrator</h5>
+                                <div class="profile-footer">
+                                    <a href="#">(edit profile)</a>
                                 </div>
                             </div>
-                        </header>
-                        <div id="accordion" class="w-100">
-                            <div class="card card-accordion card-accordion-first">
-                                <div class="card-header border-bottom-0">
-                                    <h4 class="card-title">
-                                        <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1One">
-                                            <i class="fas fa-check me-1"></i> Tasks
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapse1One" class="accordion-body collapse show">
-                                    <div class="card-body">
-                                        <ul class="widget-todo-list">
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" checked="" id="todoListItem1" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem1"><span>Curabitur ac sem at nibh egestas urabitur ac sem at nibh egestas.</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem2" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem2"><span>Lorem ipsum dolor sit amet</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem3" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem3"><span>Curabitur ac sem at nibh egestas</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem4" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem4"><span>Lorem ipsum dolor sit amet</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem5" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem5"><span>Curabitur ac sem at nibh egestas.</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem6" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem6"><span>Lorem ipsum dolor sit amet</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="checkbox-custom checkbox-default">
-                                                    <input type="checkbox" id="todoListItem7" class="todo-check">
-                                                    <label class="todo-label" for="todoListItem7"><span>Curabitur ac sem at nibh egestas.</span></label>
-                                                </div>
-                                                <div class="todo-actions">
-                                                    <a class="todo-remove" href="#">
-                                                        <i class="fas fa-times"></i>
-                                                    </a>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <hr class="solid mt-3 mb-3">
-                                        <form method="get" class="form-horizontal form-bordered">
-                                            <div class="form-group row">
-                                                <div class="col-sm-12">
-                                                    <div class="input-group mb-3">
-                                                        <input type="text" class="form-control">
-                                                        <button type="button" class="btn btn-primary" tabindex="-1">Add</button>
-                                                    </div>
+                        </div>
+                    </header>
+                    <div id="accordion" class="w-100">
+                        <div class="card card-accordion card-accordion-first">
+                            <div class="card-header border-bottom-0">
+                                <h4 class="card-title">
+                                    <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1One">
+                                        <i class="fas fa-check me-1"></i> Tasks
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse1One" class="accordion-body collapse show">
+                                <div class="card-body">
+                                    <ul class="widget-todo-list">
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" checked="" id="todoListItem1" class="todo-check">
+                                                <label class="todo-label" for="todoListItem1"><span>Curabitur ac sem at nibh egestas urabitur ac sem at nibh egestas.</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem2" class="todo-check">
+                                                <label class="todo-label" for="todoListItem2"><span>Lorem ipsum dolor sit amet</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem3" class="todo-check">
+                                                <label class="todo-label" for="todoListItem3"><span>Curabitur ac sem at nibh egestas</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem4" class="todo-check">
+                                                <label class="todo-label" for="todoListItem4"><span>Lorem ipsum dolor sit amet</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem5" class="todo-check">
+                                                <label class="todo-label" for="todoListItem5"><span>Curabitur ac sem at nibh egestas.</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem6" class="todo-check">
+                                                <label class="todo-label" for="todoListItem6"><span>Lorem ipsum dolor sit amet</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-custom checkbox-default">
+                                                <input type="checkbox" id="todoListItem7" class="todo-check">
+                                                <label class="todo-label" for="todoListItem7"><span>Curabitur ac sem at nibh egestas.</span></label>
+                                            </div>
+                                            <div class="todo-actions">
+                                                <a class="todo-remove" href="#">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <hr class="solid mt-3 mb-3">
+                                    <form method="get" class="form-horizontal form-bordered">
+                                        <div class="form-group row">
+                                            <div class="col-sm-12">
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control">
+                                                    <button type="button" class="btn btn-primary" tabindex="-1">Add</button>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card card-accordion">
-                                <div class="card-header border-bottom-0">
-                                    <h4 class="card-title">
-                                        <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1Two">
-                                            <i class="fas fa-comment me-1"></i> Messages
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapse1Two" class="accordion-body collapse">
-                                    <div class="card-body">
-                                        <ul class="simple-user-list mb-3">
-                                            <li>
-                                                <figure class="image rounded">
-                                                    <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
-                                                </figure>
-                                                <span class="title">Joseph Doe Junior</span>
-                                                <span class="message">Lorem ipsum dolor sit.</span>
-                                            </li>
-                                            <li>
-                                                <figure class="image rounded">
-                                                    <img src="img/!sample-user.jpg" alt="Joseph Junior" class="rounded-circle">
-                                                </figure>
-                                                <span class="title">Joseph Junior</span>
-                                                <span class="message">Lorem ipsum dolor sit.</span>
-                                            </li>
-                                            <li>
-                                                <figure class="image rounded">
-                                                    <img src="img/!sample-user.jpg" alt="Joe Junior" class="rounded-circle">
-                                                </figure>
-                                                <span class="title">Joe Junior</span>
-                                                <span class="message">Lorem ipsum dolor sit.</span>
-                                            </li>
-                                            <li>
-                                                <figure class="image rounded">
-                                                    <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
-                                                </figure>
-                                                <span class="title">Joseph Doe Junior</span>
-                                                <span class="message">Lorem ipsum dolor sit.</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </section>
-        </div>
-        <div class="col-lg-6 col-xl-3">
-            <section class="card card-transparent">
-                <header class="card-header">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                    </div>
-
-                    <h2 class="card-title">My Stats</h2>
-                </header>
-                <div class="card-body">
-                    <section class="card">
-                        <div class="card-body">
-                            <div class="small-chart float-end" id="sparklineBarDash"></div>
-                            <script type="text/javascript">
-                                var sparklineBarDashData = [5, 6, 7, 2, 0, 4, 2, 4, 2, 0, 4, 2, 4, 2, 0, 4];
-                            </script>
-                            <div class="h4 font-weight-bold mb-0">488</div>
-                            <p class="text-3 text-muted mb-0">Average Profile Visits</p>
-                        </div>
-                    </section>
-                    <section class="card">
-                        <div class="card-body">
-                            <div class="circular-bar circular-bar-xs m-0 mt-1 me-4 mb-0 float-end">
-                                <div class="circular-bar-chart" data-percent="45" data-plugin-options='{ "barColor": "#2baab1", "delay": 300, "size": 50, "lineWidth": 4 }'>
-                                    <strong>Average</strong>
-                                    <label><span class="percent">45</span>%</label>
-                                </div>
-                            </div>
-                            <div class="h4 font-weight-bold mb-0">12</div>
-                            <p class="text-3 text-muted mb-0">Working Projects</p>
-                        </div>
-                    </section>
-                    <section class="card">
-                        <div class="card-body">
-                            <div class="small-chart float-end" id="sparklineLineDash"></div>
-                            <script type="text/javascript">
-                                var sparklineLineDashData = [15, 16, 17, 19, 10, 15, 13, 12, 12, 14, 16, 17];
-                            </script>
-                            <div class="h4 font-weight-bold mb-0">89</div>
-                            <p class="text-3 text-muted mb-0">Pending Tasks</p>
-                        </div>
-                    </section>
-                </div>
-            </section>
-            <section class="card mb-3">
-                <header class="card-header">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                    </div>
-
-                    <h2 class="card-title">
-                        <span class="badge badge-primary font-weight-normal va-middle p-2 me-e">298</span>
-                        <span class="va-middle">Friends</span>
-                    </h2>
-                </header>
-                <div class="card-body">
-                    <div class="content">
-                        <ul class="simple-user-list">
-                            <li>
-                                <figure class="image rounded">
-                                    <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
-                                </figure>
-                                <span class="title">Joseph Doe Junior</span>
-                                <span class="message truncate">Lorem ipsum dolor sit.</span>
-                            </li>
-                            <li>
-                                <figure class="image rounded">
-                                    <img src="img/!sample-user.jpg" alt="Joseph Junior" class="rounded-circle">
-                                </figure>
-                                <span class="title">Joseph Junior</span>
-                                <span class="message truncate">Lorem ipsum dolor sit.</span>
-                            </li>
-                            <li>
-                                <figure class="image rounded">
-                                    <img src="img/!sample-user.jpg" alt="Joe Junior" class="rounded-circle">
-                                </figure>
-                                <span class="title">Joe Junior</span>
-                                <span class="message truncate">Lorem ipsum dolor sit.</span>
-                            </li>
-                        </ul>
-                        <hr class="dotted short">
-                        <div class="text-end">
-                            <a class="text-uppercase text-muted" href="#">(View All)</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="s" id="s" placeholder="Search...">
-                        <button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <div class="col-lg-12 col-xl-6">
-            <section class="card">
-                <header class="card-header card-header-transparent">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                    </div>
-
-                    <h2 class="card-title">Company Activity</h2>
-                </header>
-                <div class="card-body">
-                    <div class="timeline timeline-simple mt-3 mb-3">
-                        <div class="tm-body">
-                            <div class="tm-title">
-                                <h5 class="m-0 pt-2 pb-2 text-dark font-weight-semibold text-uppercase">November 2021</h5>
-                            </div>
-                            <ol class="tm-items">
-                                <li>
-                                    <div class="tm-box">
-                                        <p class="text-muted mb-0">7 months ago.</p>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas hendrerit augue at leo viverra, aliquam egestas lectus laoreet. Donec vehicula vestibulum ipsum, tincidunt ultrices elit suscipit ac. Sed eget risus laoreet, varius nibh id, luctus ligula. Nulla facilisi. <span class="text-primary">#awesome</span>
-                                        </p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="tm-box">
-                                        <p class="text-muted mb-0">7 months ago.</p>
-                                        <p>
-                                            Checkout! How cool is that! Etiam efficitur, sapien eget vehicula gravida, magna neque volutpat risus, vitae tempus odio arcu ac elit. Aenean porta orci eu mi fermentum varius. Curabitur ac sem at nibh egestas. Curabitur ac sem at nibh egestas.
-                                        </p>
-                                        <div class="thumbnail-gallery">
-                                            <a class="img-thumbnail lightbox" href="img/projects/project-4.jpg" data-plugin-options='{ "type":"image" }'>
-                                                <img class="img-fluid" width="215" src="img/projects/project-4.jpg">
-                                                <span class="zoom">
-                                                    <i class="bx bx-search"></i>
-                                                </span>
-                                            </a>
                                         </div>
-                                    </div>
-                                </li>
-                            </ol>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-accordion">
+                            <div class="card-header border-bottom-0">
+                                <h4 class="card-title">
+                                    <a class="accordion-toggle" data-bs-toggle="collapse" data-bs-parent="#accordion" data-bs-target="#collapse1Two">
+                                        <i class="fas fa-comment me-1"></i> Messages
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse1Two" class="accordion-body collapse">
+                                <div class="card-body">
+                                    <ul class="simple-user-list mb-3">
+                                        <li>
+                                            <figure class="image rounded">
+                                                <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
+                                            </figure>
+                                            <span class="title">Joseph Doe Junior</span>
+                                            <span class="message">Lorem ipsum dolor sit.</span>
+                                        </li>
+                                        <li>
+                                            <figure class="image rounded">
+                                                <img src="img/!sample-user.jpg" alt="Joseph Junior" class="rounded-circle">
+                                            </figure>
+                                            <span class="title">Joseph Junior</span>
+                                            <span class="message">Lorem ipsum dolor sit.</span>
+                                        </li>
+                                        <li>
+                                            <figure class="image rounded">
+                                                <img src="img/!sample-user.jpg" alt="Joe Junior" class="rounded-circle">
+                                            </figure>
+                                            <span class="title">Joe Junior</span>
+                                            <span class="message">Lorem ipsum dolor sit.</span>
+                                        </li>
+                                        <li>
+                                            <figure class="image rounded">
+                                                <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
+                                            </figure>
+                                            <span class="title">Joseph Doe Junior</span>
+                                            <span class="message">Lorem ipsum dolor sit.</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
+        </section>
     </div>
-    <div class="row pt-4 mt-1">
-        <div class="col-xl-6">
-            <section class="card card-transparent mb-3">
-                <header class="card-header">
-                    <div class="card-actions">
-                        <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                        <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+    <div class="col-lg-6 col-xl-3">
+        <section class="card card-transparent">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+
+                <h2 class="card-title">My Stats</h2>
+            </header>
+            <div class="card-body">
+                <section class="card">
+                    <div class="card-body">
+                        <div class="small-chart float-end" id="sparklineBarDash"></div>
+                        <script type="text/javascript">
+                            var sparklineBarDashData = [5, 6, 7, 2, 0, 4, 2, 4, 2, 0, 4, 2, 4, 2, 0, 4];
+                        </script>
+                        <div class="h4 font-weight-bold mb-0">488</div>
+                        <p class="text-3 text-muted mb-0">Average Profile Visits</p>
                     </div>
-
-                    <h2 class="card-title">Global Stats</h2>
-                </header>
-                <div class="card-body">
-                    <div id="vectorMapWorld" style="height: 350px; width: 100%;"></div>
+                </section>
+                <section class="card">
+                    <div class="card-body">
+                        <div class="circular-bar circular-bar-xs m-0 mt-1 me-4 mb-0 float-end">
+                            <div class="circular-bar-chart" data-percent="45" data-plugin-options='{ "barColor": "#2baab1", "delay": 300, "size": 50, "lineWidth": 4 }'>
+                                <strong>Average</strong>
+                                <label><span class="percent">45</span>%</label>
+                            </div>
+                        </div>
+                        <div class="h4 font-weight-bold mb-0">12</div>
+                        <p class="text-3 text-muted mb-0">Working Projects</p>
+                    </div>
+                </section>
+                <section class="card">
+                    <div class="card-body">
+                        <div class="small-chart float-end" id="sparklineLineDash"></div>
+                        <script type="text/javascript">
+                            var sparklineLineDashData = [15, 16, 17, 19, 10, 15, 13, 12, 12, 14, 16, 17];
+                        </script>
+                        <div class="h4 font-weight-bold mb-0">89</div>
+                        <p class="text-3 text-muted mb-0">Pending Tasks</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section class="card mb-3">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
                 </div>
-            </section>
-        </div>
-        <div class="col-xl-6">
 
-        </div>
+                <h2 class="card-title">
+                    <span class="badge badge-primary font-weight-normal va-middle p-2 me-e">298</span>
+                    <span class="va-middle">Friends</span>
+                </h2>
+            </header>
+            <div class="card-body">
+                <div class="content">
+                    <ul class="simple-user-list">
+                        <li>
+                            <figure class="image rounded">
+                                <img src="img/!sample-user.jpg" alt="Joseph Doe Junior" class="rounded-circle">
+                            </figure>
+                            <span class="title">Joseph Doe Junior</span>
+                            <span class="message truncate">Lorem ipsum dolor sit.</span>
+                        </li>
+                        <li>
+                            <figure class="image rounded">
+                                <img src="img/!sample-user.jpg" alt="Joseph Junior" class="rounded-circle">
+                            </figure>
+                            <span class="title">Joseph Junior</span>
+                            <span class="message truncate">Lorem ipsum dolor sit.</span>
+                        </li>
+                        <li>
+                            <figure class="image rounded">
+                                <img src="img/!sample-user.jpg" alt="Joe Junior" class="rounded-circle">
+                            </figure>
+                            <span class="title">Joe Junior</span>
+                            <span class="message truncate">Lorem ipsum dolor sit.</span>
+                        </li>
+                    </ul>
+                    <hr class="dotted short">
+                    <div class="text-end">
+                        <a class="text-uppercase text-muted" href="#">(View All)</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="s" id="s" placeholder="Search...">
+                    <button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
+                </div>
+            </div>
+        </section>
     </div>
+    <div class="col-lg-12 col-xl-6">
+        <section class="card">
+            <header class="card-header card-header-transparent">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
 
+                <h2 class="card-title">Company Activity</h2>
+            </header>
+            <div class="card-body">
+                <div class="timeline timeline-simple mt-3 mb-3">
+                    <div class="tm-body">
+                        <div class="tm-title">
+                            <h5 class="m-0 pt-2 pb-2 text-dark font-weight-semibold text-uppercase">November 2021</h5>
+                        </div>
+                        <ol class="tm-items">
+                            <li>
+                                <div class="tm-box">
+                                    <p class="text-muted mb-0">7 months ago.</p>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas hendrerit augue at leo viverra, aliquam egestas lectus laoreet. Donec vehicula vestibulum ipsum, tincidunt ultrices elit suscipit ac. Sed eget risus laoreet, varius nibh id, luctus ligula. Nulla facilisi. <span class="text-primary">#awesome</span>
+                                    </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="tm-box">
+                                    <p class="text-muted mb-0">7 months ago.</p>
+                                    <p>
+                                        Checkout! How cool is that! Etiam efficitur, sapien eget vehicula gravida, magna neque volutpat risus, vitae tempus odio arcu ac elit. Aenean porta orci eu mi fermentum varius. Curabitur ac sem at nibh egestas. Curabitur ac sem at nibh egestas.
+                                    </p>
+                                    <div class="thumbnail-gallery">
+                                        <a class="img-thumbnail lightbox" href="img/projects/project-4.jpg" data-plugin-options='{ "type":"image" }'>
+                                            <img class="img-fluid" width="215" src="img/projects/project-4.jpg">
+                                            <span class="zoom">
+                                                <i class="bx bx-search"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
+
 <!-- end: page -->
 
 @section scripts{
@@ -803,8 +903,13 @@
     <script src="/js/examples/examples.datatables.row.with.details.js"></script>
     <script src="/js/examples/examples.datatables.tabletools.js"></script>-->
     <script>
+        // Table: Role Count
+        //$(document).ready(function () {
+        //    $('.table').DataTable({ searching: false });
+        //});
+        // Table: Staff Info Table
         $(document).ready(function () {
-            $('.table').DataTable({ 'search': false });
+            $('#StaffInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
         });
     </script>
 }

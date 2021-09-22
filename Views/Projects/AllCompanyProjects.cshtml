@@ -80,7 +80,8 @@
     <tbody>
         @foreach (var item in Model.Projects)
         {
-            <tr>
+            <tr id="project-@item.Id">
+                @*Render Fragment -> targetable ID for the render fragment*@
                 <td>
                     @if (item.FileData != null)
                     {
@@ -126,21 +127,60 @@
                 <td>
                     <form asp-action="SelectPM" method="post">
                         <input hidden asp-for="ProjectId" value="@item.Id" />
-                        <select multiple="multiple" class="form-control" asp-for="PmId" asp-items="@Model.PMList"></select>
+                        <select multiple="multiple" class="form-control" asp-for="PmId">
+                            @foreach (var member in Model.PMList)
+                            {
+                                if (await ProjectService.IsUserOnProject(member.Value, item.Id))
+                                {
+                                    <option value="@member.Value" selected>@member.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@member.Value">@member.Text</option>
+                                }
+                            }
+                        </select>
                         <button type="submit" class="btn btn-info"></button>
                     </form>
                 </td>
                 <td>
                     <form asp-action="SelectDevs" method="post">
                         <input hidden asp-for="ProjectId" value="@item.Id" />
-                        <select multiple="multiple" class="form-control" asp-for="DevId" asp-items="@Model.DevList"></select>
+                        <select multiple="multiple" class="form-control" asp-for="SelectedDevs">
+                            @foreach (var member in Model.DevList)
+                            {
+                                if (await ProjectService.IsUserOnProject(member.Value, item.Id))
+                                {
+                                    <option value="@member.Value" selected>@member.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@member.Value">@member.Text</option>
+                                }
+                            }
+                        </select>
                         <button type="submit" class="btn btn-info"></button>
                     </form>
                 </td>
                 <td>
                     <form asp-action="SelectSubs" method="post">
                         <input hidden asp-for="ProjectId" value="@item.Id" />
-                        <select multiple="multiple" class="form-control" asp-for="SubId" asp-items="@Model.SubList"></select>
+                        <select multiple="multiple" class="form-control" asp-for="SelectedSubs">
+                            @foreach (var member in Model.SubList)
+                            {
+                                if (await ProjectService.IsUserOnProject(member.Value, item.Id))
+                                {
+                                    <option value="@member.Value" selected>@member.Text</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@member.Value">@member.Text</option>
+                                }
+                            }
+                        </select>
                         <button type="submit" class="btn btn-info"></button>
                     </form>
                 </td>

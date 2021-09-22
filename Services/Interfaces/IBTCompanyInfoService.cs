@@ -17,5 +17,7 @@ namespace TitanTracker.Services.Interfaces
         public Task<List<Ticket>> GetAllTicketsAsync(int companyId);
 
         public Task<List<Project>> GetArchivedProjectsAsync(int companyId);
+
+        public Task<List<BTUser>> GetAllMembersInRoleAsync(int companyId, string role);
     }
 }

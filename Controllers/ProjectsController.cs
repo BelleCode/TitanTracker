@@ -76,8 +76,9 @@ namespace TitanTracker.Controllers
             {
                 if (model.SelectedDevs != null)
                 {
-                    List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.ProjectId))
+                    List<string> memberIds = (await _projectService.GetProjectMembersByRoleAsync(model.ProjectId, Roles.Developer.ToString()))
                                                                    .Select(m => m.Id).ToList();
+
                     foreach (string item in memberIds)
                     {
                         await _projectService.RemoveUserFromProjectAsync(item, model.ProjectId);
@@ -92,8 +93,8 @@ namespace TitanTracker.Controllers
                     // return RedirectedAction("Details", "Projects", new { id = model.Project.Id });
                 }
             }
-
-            return RedirectToAction("AllCompanyProjects");
+            var url = Url.ActionLink("AllCompanyProjects", "Projects", null, null, null, $"project-{model.ProjectId}");
+            return Redirect(url);
         }
 
         public async Task<IActionResult> SelectSubs(AdminIndexViewModel model)
@@ -102,7 +103,7 @@ namespace TitanTracker.Controllers
             {
                 if (model.SelectedSubs != null)
                 {
-                    List<string> memberIds = (await _projectService.GetAllProjectMembersExceptPMAsync(model.ProjectId))
+                    List<string> memberIds = (await _projectService.GetProjectMembersByRoleAsync(model.ProjectId, Roles.Submitter.ToString()))
                                                                    .Select(m => m.Id).ToList();
                     foreach (string item in memberIds)
                     {
@@ -130,19 +131,14 @@ namespace TitanTracker.Controllers
 
             pMIndexViewModel.Projects = await _projectService.GetAllProjectsByCompany(companyId);
 
-            List<BTUser> developers = (await _rolesService.GetUsersInRoleAsync(Roles.Developer.ToString(), companyId));
-            List<BTUser> submitters = (await _rolesService.GetUsersInRoleAsync(Roles.Submitter.ToString(), companyId));
+            List<BTUser> developers = (await _rolesService.GetUsersInRoleAsync(Roles.Developer.ToString(), companyId)); // LIst of Devs in company
+            List<BTUser> submitters = (await _rolesService.GetUsersInRoleAsync(Roles.Submitter.ToString(), companyId)); // list of Sub
 
             List<string> devsIdList = new();
             List<string> subIdList = new();
-            //foreach (BTUser member in developers)
-            //{
-            //    if (await _rolesService.IsUserInRoleAsync(member, Roles.Developer.ToString()))
-            //    {
-            //        devsIdList.Add(member.Id);
-            //    }
-            //}
 
+            //Because we are using multiple dropdown lists on the same view we cannot leverage the fourth parameter of the SelectList/MultiSelectList
+            //Instead we have moved that functionality into the view and manually achieved the same result
             pMIndexViewModel.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "PreferredName");
             pMIndexViewModel.DevList = new MultiSelectList(developers, "Id", "PreferredName", devsIdList);
             pMIndexViewModel.SubList = new MultiSelectList(submitters, "Id", "PreferredName", subIdList);

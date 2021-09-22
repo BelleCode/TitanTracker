@@ -167,7 +167,9 @@ namespace TitanTracker.Data.Migrations
                     FileName = table.Column<string>(type: "text", nullable: true),
                     FileData = table.Column<byte[]>(type: "bytea", nullable: true),
                     FileContentType = table.Column<string>(type: "text", nullable: true),
-                    Archived = table.Column<bool>(type: "boolean", nullable: false)
+                    Archived = table.Column<bool>(type: "boolean", nullable: false),
+                    ProjectStatus = table.Column<int>(type: "integer", nullable: false),
+                    ProjectPriority = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -178,12 +180,6 @@ namespace TitanTracker.Data.Migrations
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_ProjectPriorities_ProjectPriorityId",
-                        column: x => x.ProjectPriorityId,
-                        principalTable: "ProjectPriorities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -600,11 +596,6 @@ namespace TitanTracker.Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_ProjectPriorityId",
-                table: "Projects",
-                column: "ProjectPriorityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TicketAttachments_TicketId",
                 table: "TicketAttachments",
                 column: "TicketId");
@@ -677,6 +668,9 @@ namespace TitanTracker.Data.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
+                name: "ProjectPriorities");
+
+            migrationBuilder.DropTable(
                 name: "TicketAttachments");
 
             migrationBuilder.DropTable(
@@ -708,9 +702,6 @@ namespace TitanTracker.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Companies");
-
-            migrationBuilder.DropTable(
-                name: "ProjectPriorities");
         }
     }
 }

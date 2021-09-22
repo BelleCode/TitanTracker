@@ -17,8 +17,20 @@ namespace TitanTracker.Models.Enums
         [Display(Name = "Project Manager")]
         ProjectManager,
 
+        [Display(Name = "Dev Manager")]
+        DevManager,
+
         Developer,
+
+        [Display(Name = "Test Manager")]
+        TestManager,
+
+        Tester,
         Submitter,
+
+        [Display(Name = "Scrum Master")]
+        ScrumMaster,
+
         DemoUser    // DemoUser
     }
 }

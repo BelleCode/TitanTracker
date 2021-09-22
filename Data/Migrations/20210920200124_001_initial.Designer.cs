@@ -10,7 +10,7 @@ using TitanTracker.Data;
 namespace TitanTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210916221930_001_initial")]
+    [Migration("20210920200124_001_initial")]
     partial class _001_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -427,7 +427,13 @@ namespace TitanTracker.Data.Migrations
                     b.Property<string>("ProjectManagerId")
                         .HasColumnType("text");
 
+                    b.Property<int>("ProjectPriority")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("ProjectPriorityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProjectStatus")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("StartDate")
@@ -436,8 +442,6 @@ namespace TitanTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("ProjectPriorityId");
 
                     b.ToTable("Projects");
                 });
@@ -798,13 +802,7 @@ namespace TitanTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TitanTracker.Models.ProjectPriority", "ProjectPriority")
-                        .WithMany()
-                        .HasForeignKey("ProjectPriorityId");
-
                     b.Navigation("Company");
-
-                    b.Navigation("ProjectPriority");
                 });
 
             modelBuilder.Entity("TitanTracker.Models.Ticket", b =>

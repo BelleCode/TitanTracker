@@ -83,7 +83,10 @@ namespace TitanTracker.Data
             await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.ProgramManager.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.ProjectManager.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.DevManager.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Developer.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.TestManager.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Tester.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.Submitter.ToString()));
             await roleManager.CreateAsync(new IdentityRole(Roles.DemoUser.ToString()));
         }
@@ -485,6 +488,16 @@ namespace TitanTracker.Data
                     {
                          CompanyId = Alphacompany1Id,
                          Name = "C#: Retail Manager",
+                         Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
+                         StartDate = new DateTime(2021,7,15),
+                         EndDate = new DateTime(2021,7,24).AddMonths(2),
+                         ProjectPriorityId = priorityMedium
+                     },
+                    // JS: WeatherPro
+                    new Project()
+                    {
+                         CompanyId = Alphacompany1Id,
+                         Name = "JS: WeatherPro - Web Application",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
@@ -1207,6 +1220,122 @@ namespace TitanTracker.Data
                 throw;
             }
 
+            //Seed Default DevManager User
+            defaultUser = new BTUser
+            {
+                UserName = "DevManager1@bugtracker.com",
+                Email = "DevManager1@bugtracker.com",
+                FirstName = "Sara",
+                LastName = "Lance",
+                PreferredName = "White Canary",
+                EmailConfirmed = true,
+                CompanyId = Alphacompany1Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.DevManager.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default Submitter1 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
+            //Seed Default TestManager User
+            defaultUser = new BTUser
+            {
+                UserName = "TestManager1@bugtracker.com",
+                Email = "TestManager1@bugtracker.com",
+                FirstName = "Cisco",
+                LastName = "Ramon",
+                PreferredName = "Vibe",
+                EmailConfirmed = true,
+                CompanyId = Alphacompany1Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.TestManager.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default Submitter1 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
+            //Seed Default Tester1 User
+            defaultUser = new BTUser
+            {
+                UserName = "Tester1@bugtracker.com",
+                Email = "Tester1@bugtracker.com",
+                FirstName = "Oliver",
+                LastName = "Queen",
+                PreferredName = "Green Arrow",
+                EmailConfirmed = true,
+                CompanyId = Alphacompany1Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.Tester.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default Submitter1 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
+            //Seed Default Tester1-2 User
+            defaultUser = new BTUser
+            {
+                UserName = "Tester1-2@bugtracker.com",
+                Email = "Tester1-2@bugtracker.com",
+                FirstName = "Caitlin",
+                LastName = "Snow",
+                PreferredName = "Green Arrow",
+                EmailConfirmed = true,
+                CompanyId = Alphacompany1Id
+            };
+            try
+            {
+                var user = await userManager.FindByEmailAsync(defaultUser.Email);
+                if (user == null)
+                {
+                    await userManager.CreateAsync(defaultUser, "Abc&123!");
+                    await userManager.AddToRoleAsync(defaultUser, Roles.Tester.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Default Submitter1 User.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+
             //Seed Default Submitter1 User
             defaultUser = new BTUser
             {
@@ -1235,7 +1364,6 @@ namespace TitanTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             #endregion AlphaCompany1Id
 
@@ -1531,6 +1659,7 @@ namespace TitanTracker.Data
                 throw;
             }
         }
+
         #endregion BetaCompany1Id
 
         public static async Task SeedDemoUsersAsync(UserManager<BTUser> userManager)

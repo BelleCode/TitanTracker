@@ -317,7 +317,7 @@ namespace TitanTracker.Data
                     new Project()
                     {
                          CompanyId = Alphacompany1Id,
-                         Name = " MVC: Sum of All Fears",
+                         Name = "MVC: Sum of All Fears",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
@@ -417,7 +417,7 @@ namespace TitanTracker.Data
                     new Project()
                     {
                          CompanyId = Alphacompany1Id,
-                         Name = "C#: Recursion Lab",
+                         Name = "C#: Recursion",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
@@ -487,7 +487,7 @@ namespace TitanTracker.Data
                     new Project()
                     {
                          CompanyId = Alphacompany1Id,
-                         Name = "C#: Retail Manager",
+                         Name = "MVC: Retail Manager",
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),

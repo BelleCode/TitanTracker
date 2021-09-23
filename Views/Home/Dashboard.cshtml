@@ -68,18 +68,18 @@
                                         Your Active Projects
                                     </h4>
                                     <div class="info">
-                                        @if (btUser.Projects.Count != 0)
+                                        @if ((await ProjectService.GetUserProjectsAsync(btUser.Id)).Count() != 0)
                                         {
                                             <strong class="amount">@btUser.Projects.Count</strong>
                                             <span class="text-primary">
                                                 @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
                                                 (@Model.Projects.Where(p => p.ProjectStatus switch
-                                         {
-                                             BTProjectStatus.Ideation or
-                                             BTProjectStatus.Requirements or
-                                             BTProjectStatus.Design => true,
-                                             _ => false
-                                         }).Count() in planning)
+                                  {
+                                      BTProjectStatus.Ideation or
+                                      BTProjectStatus.Requirements or
+                                      BTProjectStatus.Design => true,
+                                      _ => false
+                                  }).Count() in planning)
                                             </span>
                                         }
                                     </div>
@@ -322,7 +322,7 @@
         {
             <section class="card">
                 <header class="card-header card-header-dark">
-                    <h2 class="card-title">Project Stats</h2>
+                    <h2 class="card-title">Project State</h2>
                 </header>
                 <div class="card-body">
                     <table class="table table-responsive-md table-hover table-striped mb-0" id="ProjectsTable">
@@ -347,25 +347,38 @@
                         <tbody>
                             @foreach (var project in Model.Projects)
                             {
-                                <tr>
-                                    <td>@project.Id</td>
-                                    <td>@project.Name</td>
-                                    <td>@project.ProjectStatus</td>
-                                    <td>@project.ProjectPriority</td>
-                                    <td></td>
-                                    <td><span class="badge badge-success">Success</span></td>
+                            <tr>
+                                <td>@project.Id</td>
+                                <td>@project.Name</td>
+                                <td>@project.ProjectStatus</td>
+                                @foreach (var projStatus in Enum.GetValues(typeof(BTProjectStatus)))
+                                {
                                     <td>
-                                        <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
-                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                                100%
-                                            </div>
+                                        @if (nameof(project.ProjectStatus) == nameof(projStatus))
+                                        {
+                                            <input type="radio" checked name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                        }
+                                        else
+                                        {
+                                            <input type="radio" name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                        }
+                                    </td>
+                                }
+                                <td>@project.ProjectPriority</td>
+                                <td></td>
+                                <td><span class="badge badge-success">Success</span></td>
+                                <td>
+                                    <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
+                                        <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            100%
                                         </div>
-                                    </td>
-                                    <td class="actions-hover actions-fade">
-                                        <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                        <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </td>
+                                <td class="actions-hover actions-fade">
+                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -883,6 +896,11 @@
         </section>
     </div>
 </div>
+
+<form id="projectPriorityForm" asp-controller="Projects" asp-action="UpdateProjectStatus">
+    <input type="hidden" name="projectId" id="projectId" value="" />
+    <input type="hidden" name="projectStatus" id="projectStatus" value="" />
+</form>
 
 <!-- end: page -->
 

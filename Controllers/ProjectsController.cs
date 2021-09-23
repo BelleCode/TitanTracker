@@ -375,6 +375,20 @@ namespace TitanTracker.Controllers
             return View(project);
         }
 
+        [HttpPost]
+        public async Task UpdateProjectPriority(int projectId, string projectStatus)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+
+            BTProjectStatus newStatus;
+
+            Enum.TryParse(projectStatus, out newStatus);
+
+            project.ProjectStatus = newStatus;
+
+            await _context.SaveChangesAsync();
+        }
+
         // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

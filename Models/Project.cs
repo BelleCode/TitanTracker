@@ -19,7 +19,7 @@ namespace TitanTracker.Models
         public int CompanyId { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(500)]
         [DisplayName("Project Name")]
         public string Name { get; set; }
 

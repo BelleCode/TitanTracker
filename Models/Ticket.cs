@@ -14,7 +14,7 @@ namespace TitanTracker.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(500)]
         [DisplayName("Title")]
         public string Title { get; set; }
 

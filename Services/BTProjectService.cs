@@ -300,21 +300,30 @@ namespace TitanTracker.Services
         {
             try
             {
-                List<Project> userProjects = (await _context.Users
-                                                            .Include(u => u.Projects)
-                                                                .ThenInclude(p => p.Company)
-                                                            .Include(u => u.Projects)
-                                                                .ThenInclude(p => p.Members)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(p => p.Tickets)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(t => t.Tickets)
-                                                                    .ThenInclude(t => t.DeveloperUser)
-                                                           .Include(u => u.Projects)
-                                                                .ThenInclude(t => t.Tickets)
-                                                                    .ThenInclude(t => t.OwnerUser)
-                                                                    .FirstOrDefaultAsync(u => u.Id == userId)).Projects.ToList();
-                return userProjects;
+                BTUser btUser = _context.Users.Find(userId);
+
+                if (await _rolesService.IsUserInRoleAsync(btUser, Roles.Admin.ToString()))
+                {
+                    return await GetAllProjectsByCompany(btUser.CompanyId.Value);
+                }
+                else
+                {
+                    List<Project> userProjects = (await _context.Users
+                                                                .Include(u => u.Projects)
+                                                                    .ThenInclude(p => p.Company)
+                                                                .Include(u => u.Projects)
+                                                                    .ThenInclude(p => p.Members)
+                                                               .Include(u => u.Projects)
+                                                                    .ThenInclude(p => p.Tickets)
+                                                               .Include(u => u.Projects)
+                                                                    .ThenInclude(t => t.Tickets)
+                                                                        .ThenInclude(t => t.DeveloperUser)
+                                                               .Include(u => u.Projects)
+                                                                    .ThenInclude(t => t.Tickets)
+                                                                        .ThenInclude(t => t.OwnerUser)
+                                                                        .FirstOrDefaultAsync(u => u.Id == userId)).Projects.ToList();
+                    return userProjects;
+                }
             }
             catch (Exception ex)
             {

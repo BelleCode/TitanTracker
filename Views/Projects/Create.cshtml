@@ -37,7 +37,7 @@
                 <select asp-for="ProjectPriority" class="form-control" asp-items="@Model.PriorityList"></select>
             </div>
 
-            <label>Image Preview</label>
+            <label>Image Preview</label>W
 
             <div class="form-group">
                 <label asp-for="Project.FormFile" class="control-label"></label>
@@ -54,6 +54,7 @@
             {
                 <img id="imageFileData" style="width:50px; height:50px" class="img-flud img-thumbnail rounded" style="object-fit:cover" src="~/img/Placeholder.png" />
             }
+
             @*<div class="form-group">
                     <label class="control-label">Project Manager</label>
                     <select asp-for="PmId" class="form-control" asp-items="@Model.PMList"></select>

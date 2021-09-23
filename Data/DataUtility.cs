@@ -1940,12 +1940,12 @@ namespace TitanTracker.Data
             int retailManagerId = context.Projects.FirstOrDefault(p => p.Name == "MVC: Retail Manager").Id;
 
             //Get ticket type Ids
-            BTTicketType typeFeatureDefect = BTTicketType.FeatureDefect;
-            BTTicketType typePerformance = BTTicketType.Performance;
-            BTTicketType typePolish = BTTicketType.Polish;
-            BTTicketType typeSecurity = BTTicketType.Security;
-            BTTicketType typeUsability = BTTicketType.Usability;
-            BTTicketType typeAccessibility = BTTicketType.Accessibility;
+            BTTicketType typeFeatureDefect = BTTicketType.FeatureDefect;    // Something doesn't work as designed
+            BTTicketType typePerformance = BTTicketType.Performance;        // Feature works as designed, but is too slow or too demanding on other resources
+            BTTicketType typePolish = BTTicketType.Polish;                  // Feature works well, but is "rough around the edges", and has imperfections or cosmetic issues which impact perception
+            BTTicketType typeSecurity = BTTicketType.Security;              // Feature works but is security is lack or data is vulnerable
+            BTTicketType typeUsability = BTTicketType.Usability;            // Feature works as designed, but is difficult for the user to use or undiscoverable
+            BTTicketType typeAccessibility = BTTicketType.Accessibility;    // Feature is not ADA compliant
 
             //Get ticket priority Ids
             BTTicketPriority priorityLow = BTTicketPriority.Low;            // Pri : 4 Review before next iteration. Remove if not Pri 3 +

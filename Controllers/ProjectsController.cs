@@ -53,9 +53,14 @@ namespace TitanTracker.Controllers
             string userId = _userManager.GetUserId(User);
             int companyId = User.Identity.GetCompanyId().Value;
 
-            List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
+            //List<Project> projects = await _projectService.GetUserProjectsAsync(userId);
 
-            return View(projects);
+            //return View(projects);
+
+            return View(new AdminIndexViewModel()
+            {
+                Projects = await _projectService.GetUserProjectsAsync(userId),
+            });
         }
 
         public async Task<IActionResult> SelectPM(AdminIndexViewModel model)

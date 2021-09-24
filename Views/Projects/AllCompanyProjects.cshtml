@@ -13,10 +13,9 @@
     BTUser btUser = await UserManager.GetUserAsync(User);
     int companyId = User.Identity.GetCompanyId().Value;
     Company company = await CompanyInfoService.GetCompanyInfoByIdAsync(companyId);
-    //BTUser projectManager = await ProjectService.GetProjectManagerAsync(Model.ProjectId);
-    //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
+    List<Ticket> tickets = await TicketService.GetTicketsByUserIdAsync(btUser.Id, companyId);
+    List<Project> adminProjects = await ProjectService.GetAdminProjectsAsync(btUser.Id, companyId);
 }
-
 
 <h3>@User.IsInRole(Roles.Admin.ToString())</h3>
 <header class="page-header">
@@ -35,6 +34,172 @@
     </div>
 </header>
 
+<!--===== Wigets: User Project Stats  ====-->
+<div class="row mb-3">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-primary mb-3">
+
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-primary">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">
+                                        Your Active Projects
+                                    </h4>
+                                    <div class="info">
+                                        @if ((await ProjectService.GetUserProjectsAsync(btUser.Id)).Count() != 0)
+                                        {
+                                            <strong class="amount">@btUser.Projects.Count</strong>
+                                            <span class="text-primary">
+                                                @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
+                                                (@Model.Projects.Where(p => p.ProjectStatus switch
+                                    {
+                                        BTProjectStatus.Ideation or
+                                        BTProjectStatus.Requirements or
+                                        BTProjectStatus.InDesign => true,
+                                        _ => false
+                                    }).Count() in planning)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fa fa-project-diagram me-1 text-4 top-3 position-relative text-color-info"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Required</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-danger mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-danger">
+                                    <i class="fas fa-bug"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Defect Tickets Assigned to You</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fa fa-ticket-alt me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!--===== OPTIONAL !!!!: 1.5st Row, Block Widgets: Projects, Tickets ====-->
+        <div class="row">
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-primary mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-primary">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Your Features (Not active)</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fas fa-lightbulb me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="col-6">
+                <section class="card card-featured-left card-featured-info mb-3">
+                    <div class="card-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-info">
+                                    <i class="fas fa-briefcase"></i>
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h4 class="title">Feature Work Items(Not Active)</h4>
+                                    <div class="info">
+                                        @if (tickets.Count != 0)
+                                        {
+                                            <strong class="amount">@tickets.Count</strong>
+                                            <span class="text-danger">
+                                                (@tickets.Where(t => t.DeveloperUserId == null).Count() unassigned)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer card-footer-btn-group">
+                                    <a href="# " class="text-color-success"><i class="fas fa-briefcase me-1 text-4 top-3 position-relative text-color-success"></i>Mine</a>
+                                    <a href="#" class="text-color-primary"><i class="fa fa-user-plus me-1 text-4 top-3 position-relative text-color-primary"></i>Assign</a>
+                                    <a href="#" class="text-color-danger"><i class="fa fa-fire me-1 text-4 top-3 position-relative text-color-danger"></i>Critical</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <section class="card">
+            <header class="card-header">
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+
+                <h2 class="card-title">Bar Chart: Overlapping On Mobile</h2>
+            </header>
+            <div class="card-body">
+                <div id="ChartistOverlappingBarsOnMobile" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+
+                <!-- See: js/examples/examples.charts.js for the example code. -->
+            </div>
+        </section>
+    </div>
+</div>
+
 <!--===== Company Stats  ====-->
 <div class="row">
     <div class="col-xl-12">
@@ -42,7 +207,7 @@
         {
             <section class="card">
                 <header class="card-header card-header-dark">
-                    <h2 class="card-title">Project Info</h2>
+                    <h2 class="card-title">Projects I'm On'</h2>
                 </header>
                 <div class="card-body">
                     <table class="table table-responsive-md table-hover mb-0" id="ProjectInfo">
@@ -287,9 +452,6 @@
         }
     </tbody>
 </table>
-
-
-
 
 <form id="projectStatusForm" asp-controller="Projects" asp-action="UpdateProjectStatus">
     <input type="hidden" name="projectId" id="projectId" value="" />

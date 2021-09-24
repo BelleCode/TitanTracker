@@ -75,12 +75,12 @@
                                             <span class="text-primary">
                                                 @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
                                                 (@Model.Projects.Where(p => p.ProjectStatus switch
-                                       {
-                                           BTProjectStatus.Ideation or
-                                           BTProjectStatus.Requirements or
-                                           BTProjectStatus.InDesign => true,
-                                           _ => false
-                                       }).Count() in planning)
+                                   {
+                                       BTProjectStatus.Ideation or
+                                       BTProjectStatus.Requirements or
+                                       BTProjectStatus.InDesign => true,
+                                       _ => false
+                                   }).Count() in planning)
                                             </span>
                                         }
                                     </div>
@@ -196,15 +196,11 @@
             </div>
         </div>
     </div>
+    <!--===== Chart: BarChart Overlapping On Mobile ====-->
     <div class="col-6">
         <section class="card">
             <header class="card-header">
-                <div class="card-actions">
-                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
-                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
-                </div>
-
-                <h2 class="card-title">Bar Chart: Overlapping On Mobile</h2>
+                <h2 class="card-title">Tickets Broken Down by Priority</h2>
             </header>
             <div class="card-body">
                 <div id="ChartistOverlappingBarsOnMobile" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
@@ -214,7 +210,16 @@
         </section>
     </div>
 </div>
+<section class="card">
+    <header class="card-header">
+        <h2 class="card-title">Tickets Broken Down by Priority</h2>
+    </header>
+    <div class="card-body">
+        <div id="ChartistOverlappingBarsOnMobile2" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
 
+        <!-- See: js/examples/examples.charts.js for the example code. -->
+    </div>
+</section>
 <!--===== 3rd Row Diagrams: Priority Projects, Number of Tickets in Each Project ====-->
 <!--===== 3rd Row, Staff Breakdown: Roles & Members, Staff info and Assignments ====-->
 <hr />
@@ -890,5 +895,11 @@
             $('#StaffInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
             $('#ProjectInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
         });
+
+        let url1 = '@Url.Action("PriorityChart", "Charts")';
+        let url2 = '@Url.Action("ProjectStatusChart", "Charts")';
+        //$(document).load(priorityChart(url1));
+
+        $(document).ready(mainCall(url1, url2));
     </script>
 }

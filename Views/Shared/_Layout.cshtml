@@ -64,6 +64,7 @@
     <link rel="stylesheet" href="/css/skins/default.css" />
 
     <!-- Theme Custom CSS -->
+    <link href="~/vendor/chartist/chartist.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/custom.css">
 
     <!-- Head Libs -->
@@ -81,7 +82,7 @@
                 </a>*@
 
             <div id="userbox" class="userbox ms-0 mt-3">
-                <a href="#" data-bs-toggle="dropdown  enctype="multipart/form-data">
+                <a href="#" data-bs-toggle="dropdown enctype="multipart/form-data">
                     @if (btUser.AvatarFileData != null)
                     {
                         <figure class="profile-picture">
@@ -1226,9 +1227,9 @@
 
     <!-- Examples -->
     <script src="/js/examples/examples.dashboard.js"></script>
+    <script src="/js/custom.js"></script>
+    <script src="~/vendor/chartist/chartist.js"></script>
     @RenderSection("scripts", required: false)
 
-    <!-- Theme Custom -->
-    <script src="/js/custom.js"></script>
 </body>
 </html>

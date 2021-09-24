@@ -1,3 +1,5 @@
+const { PR } = require("../vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake");
+
 function changeProjectStatus(projectId, value) {
     let form = document.getElementById("projectStatusForm");
     let projectIdInput = document.getElementById("projectId");
@@ -17,7 +19,7 @@ function changeProjectStatus(projectId, value) {
     });
 
     form.reset();
-} 
+}
 function changeProjectPriority(projectId, value) {
     let form = document.getElementById("projectPriorityForm");
     let projectIdInput = document.getElementById("priorityprojectId");
@@ -42,31 +44,79 @@ function changeProjectPriority(projectId, value) {
 /*
 Chartist: Bar Chart - Overlapping On Mobile
 */
-(function () {
-    if ($('#ChartistOverlappingBarsOnMobile').get(0)) {
-        var data = {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            series: [
-                [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
-                [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
-            ]
-        };
+function mainCall(url1, url2) {
+    priorityChart(url1);
+    projectStatusChart(url2);
+}
 
-        var options = {
-            seriesBarDistance: 10
-        };
+function priorityChart(url) {
+    $.post(url).then(function (response) {
+        if ($('#ChartistOverlappingBarsOnMobile').get(0)) {
+            var data = {
+                labels: response.labels,
+                series: [
+                    response.data,
+                    response.data
+                ]
+            };
 
-        var responsiveOptions = [
-            ['screen and (max-width: 640px)', {
-                seriesBarDistance: 5,
-                axisX: {
-                    labelInterpolationFnc: function (value) {
-                        return value[0];
-                    }
+            var options = {
+                seriesBarDistance: 10,
+                reverseData: true,
+                horizontalBars: true,
+                axisY: {
+                    offset: 70
                 }
-            }]
-        ];
+            };
 
-        new Chartist.Bar('#ChartistOverlappingBarsOnMobile', data, options, responsiveOptions);
-    }
-})();
+            var responsiveOptions = [
+                ['screen and (max-width: 640px)', {
+                    seriesBarDistance: 5,
+                    axisX: {
+                        labelInterpolationFnc: function (value) {
+                            return value[0];
+                        }
+                    }
+                }]
+            ];
+
+            new Chartist.Bar('#ChartistOverlappingBarsOnMobile', data, options, responsiveOptions);
+        }
+    });
+}
+
+function projectStatusChart(url) {
+    $.post(url).then(function (response) {
+        if ($('#ChartistOverlappingBarsOnMobile2').get(0)) {
+            var data = {
+                labels: response.labels,
+                series: [
+                    response.data,
+                    response.data
+                ]
+            };
+
+            var options = {
+                seriesBarDistance: 10,
+                reverseData: true,
+                horizontalBars: true,
+                axisY: {
+                    offset: 70
+                }
+            };
+
+            var responsiveOptions = [
+                ['screen and (max-width: 640px)', {
+                    seriesBarDistance: 5,
+                    axisX: {
+                        labelInterpolationFnc: function (value) {
+                            return value[0];
+                        }
+                    }
+                }]
+            ];
+
+            new Chartist.Bar('#ChartistOverlappingBarsOnMobile2', data, options, responsiveOptions);
+        }
+    });
+}

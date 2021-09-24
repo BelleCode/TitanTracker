@@ -55,6 +55,7 @@
         <div class="row">
             <div class="col-6">
                 <section class="card card-featured-left card-featured-primary mb-3">
+
                     <div class="card-body">
                         <div class="widget-summary">
                             <div class="widget-summary-col widget-summary-col-icon">
@@ -74,12 +75,12 @@
                                             <span class="text-primary">
                                                 @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
                                                 (@Model.Projects.Where(p => p.ProjectStatus switch
-                                  {
-                                      BTProjectStatus.Ideation or
-                                      BTProjectStatus.Requirements or
-                                      BTProjectStatus.Design => true,
-                                      _ => false
-                                  }).Count() in planning)
+                                       {
+                                           BTProjectStatus.Ideation or
+                                           BTProjectStatus.Requirements or
+                                           BTProjectStatus.InDesign => true,
+                                           _ => false
+                                       }).Count() in planning)
                                             </span>
                                         }
                                     </div>
@@ -198,20 +199,16 @@
     <div class="col-6">
         <section class="card">
             <header class="card-header">
-                <h2 class="card-title">Bar Chart: Horizontal Chart</h2>
+                <div class="card-actions">
+                    <a href="#" class="card-action card-action-toggle" data-card-toggle></a>
+                    <a href="#" class="card-action card-action-dismiss" data-card-dismiss></a>
+                </div>
+
+                <h2 class="card-title">Bar Chart: Overlapping On Mobile</h2>
             </header>
             <div class="card-body">
-                <strong>
-                    <select class="form-control" id="projectSelector">
-                        @if (Model.Projects.Count != 0)
-                        {
-                            <option value="Porto Admin" selected>Porto Admin</option>
-                            <option value="Porto Drupal">Porto Drupal</option>
-                            <option value="Porto Wordpress">Porto Wordpress</option>
-                        }
-                    </select>
-                </strong>
-                <div id="ChartistHorizontalChart" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+                <div id="ChartistOverlappingBarsOnMobile" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+
                 <!-- See: js/examples/examples.charts.js for the example code. -->
             </div>
         </section>
@@ -243,7 +240,7 @@
                         {
                             <tr>
                                 <td><i class="fa fa-user-cog"></i></td>
-                                <td>@role.</td>
+                                <td>@role</td>
                                 <td>@((await CompanyInfoService.GetAllMembersInRoleAsync(companyId, role.ToString())).Count)</td>
                                 <td class="actions-hover actions-fade">
                                     <a href=""><i class="fas fa-exchange-alt"></i></a>
@@ -322,63 +319,79 @@
         {
             <section class="card">
                 <header class="card-header card-header-dark">
-                    <h2 class="card-title">Project State</h2>
+                    <h2 class="card-title">Project Info</h2>
                 </header>
                 <div class="card-body">
-                    <table class="table table-responsive-md table-hover table-striped mb-0" id="ProjectsTable">
+                    <table class="table table-responsive-md table-hover mb-0" id="ProjectInfo">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Project</th>
+                                <th>Priority</th>
+                                <th>Severity</th>
                                 <th>Ideation</th>
                                 <th>Requirements</th>
-                                <th>Design</th>
-                                <th>Development</th>
-                                <th>Testing</th>
-                                <th>Deployment</th>
-                                <th>Maintenance</th>
-                                <th>Priority</th>
-                                <th></th>
+                                <th>In Design</th>
+                                <th>In Dev</th>
+                                <th>In Test</th>
+                                <th>Deployment<br>Ready</th>
+                                <th>Live</th>
+                                <th>Deprecated</th>
+                                <th>Sunset</th>
                                 <th>Current Status</th>
                                 <th>Progress</th>
-                                <th>action</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var project in Model.Projects)
                             {
-                            <tr>
-                                <td>@project.Id</td>
-                                <td>@project.Name</td>
-                                <td>@project.ProjectStatus</td>
-                                @foreach (var projStatus in Enum.GetValues(typeof(BTProjectStatus)))
-                                {
+                                <tr>
+                                    <td>@project.Id</td>
+                                    <td>@project.Name</td>
                                     <td>
-                                        @if (nameof(project.ProjectStatus) == nameof(projStatus))
-                                        {
-                                            <input type="radio" checked name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
-                                        }
-                                        else
-                                        {
-                                            <input type="radio" name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
-                                        }
+                                        <select id="@project.Id" class="btn btn-secondary dropdown-toggle" onchange="changeProjectPriority(this.id, this.value)">
+                                            @foreach (var projPri in Enum.GetValues(typeof(BTProjectPriority)))
+                                            {
+                                                <!--To include a dropdown menu create 1 td element, use teh foreach loop to create the option elememt and the if statement to choose the first one-->
+                                                @if (string.Equals(projPri.ToString(), project.ProjectPriority.ToString()))
+                                                {
+                                                    <option selected value="@projPri.ToString()">@projPri.ToString()</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@projPri.ToString()">@projPri.ToString()</option>
+                                                }
+                                            }
+                                        </select>
                                     </td>
-                                }
-                                <td>@project.ProjectPriority</td>
-                                <td></td>
-                                <td><span class="badge badge-success">Success</span></td>
-                                <td>
-                                    <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
-                                        <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                            100%
+                                    <td></td>
+                                    @foreach (var projStatus in Enum.GetValues(typeof(BTProjectStatus)))
+                                    {
+                                        <td>
+                                            @if (string.Equals(projStatus.ToString(), project.ProjectStatus.ToString()))
+                                            {
+                                                <input type="radio" checked name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                            }
+                                        </td>
+                                    }
+                                    <td><span class="badge badge-success">Success</span></td>
+                                    <td>
+                                        <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
+                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                                100%
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="actions-hover actions-fade">
-                                    <a href=""><i class="fas fa-pencil-alt"></i></a>
-                                    <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td class="actions-hover actions-fade">
+                                        <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -386,46 +399,6 @@
             </section>
         }
     </div>
-    <section class="card">
-        <header class="card-header card-header-transparent">
-            <h2 class="card-title">Project Stats</h2>
-        </header>
-        <div class="card-body">
-            <table class="table table-responsive-md table-striped mb-0" id="ProjectsTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Project</th>
-                        <th>State</th>
-                        <th>Priority</th>
-                        <th></th>
-                        <th>Current Status</th>
-                        <th>Progress</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var project in Model.Projects)
-                    {
-                        <tr>
-                            <td>@project.Id</td>
-                            <td>@project.Name</td>
-                            <td>@project.ProjectStatus</td>
-                            <td>@project.ProjectPriority</td>
-                            <td></td>
-                            <td><span class="badge badge-success">Success</span></td>
-                            <td>
-                                <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
-                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                        100%
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </section>
 </div>
 
 <hr />
@@ -897,37 +870,25 @@
     </div>
 </div>
 
-<form id="projectPriorityForm" asp-controller="Projects" asp-action="UpdateProjectStatus">
+<form id="projectStatusForm" asp-controller="Projects" asp-action="UpdateProjectStatus">
     <input type="hidden" name="projectId" id="projectId" value="" />
     <input type="hidden" name="projectStatus" id="projectStatus" value="" />
+</form>
+
+<!-- MAKE SURE TO CHANGE THE JAVASCRIPT TOO custom.js -->
+<form id="projectPriorityForm" asp-controller="Projects" asp-action="UpdateProjectPriority">
+    <input type="hidden" name="projectId" id="priorityprojectId" value="" />
+    <input type="hidden" name="projectPriority" id="projectPriority" value="" />
 </form>
 
 <!-- end: page -->
 
 @section scripts{
-    <!-- Specific Page Vendor -->
-    <!--<script src="/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
-    <script src="/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.html5.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.print.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/JSZip-2.5.0/jszip.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
-    <script src="/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
-    <script src="/vendor/select2/js/select2.js"></script>-->
-    <!-- Examples -->
-    <!--<script src="/js/examples/examples.datatables.default.js"></script>
-    <script src="/js/examples/examples.datatables.row.with.details.js"></script>
-    <script src="/js/examples/examples.datatables.tabletools.js"></script>-->
+
     <script>
-        // Table: Role Count
-        //$(document).ready(function () {
-        //    $('.table').DataTable({ searching: false });
-        //});
-        // Table: Staff Info Table
         $(document).ready(function () {
             $('#StaffInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
+            $('#ProjectInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
         });
     </script>
 }

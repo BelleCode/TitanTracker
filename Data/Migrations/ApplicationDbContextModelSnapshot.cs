@@ -459,6 +459,21 @@ namespace TitanTracker.Data.Migrations
                     b.ToTable("ProjectPriorities");
                 });
 
+            modelBuilder.Entity("TitanTracker.Models.ProjectStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectStatuses");
+                });
+
             modelBuilder.Entity("TitanTracker.Models.Ticket", b =>
                 {
                     b.Property<int>("Id")

@@ -20,6 +20,7 @@ namespace TitanTracker.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ProjectPriority> ProjectPriorities { get; set; }
+        public DbSet<ProjectStatus> ProjectStatuses { get; set; }
         public DbSet<TicketAttachment> TicketAttachments { get; set; }
         public DbSet<TicketComment> TicketComments { get; set; }
         public DbSet<TicketPriority> TicketPriorities { get; set; }

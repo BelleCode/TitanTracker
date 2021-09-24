@@ -150,14 +150,44 @@ namespace TitanTracker.Data
             }
         }
 
+        public static async Task SeedDefaultProjectStatusAsync(ApplicationDbContext context)
+        {
+            try
+            {
+                IList<Models.ProjectStatus> projectStatuses = new List<ProjectStatus>() {
+                    new ProjectStatus() { Name = BTProjectStatus.Ideation.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.Requirements.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.InDesign.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.InDevelopment.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.InTest.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.DeploymentReady.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.Live.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.Deprecated.ToString() },
+                    new ProjectStatus() { Name = BTProjectStatus.Sunset.ToString() },
+                };
+
+                var dbProjectStatuses = context.ProjectStatuses.Select(c => c.Name).ToList();
+                await context.ProjectStatuses.AddRangeAsync(projectStatuses.Where(c => !dbProjectStatuses.Contains(c.Name)));
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("*************  ERROR  *************");
+                Console.WriteLine("Error Seeding Project Statuses.");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("***********************************");
+                throw;
+            }
+        }
+
         public static async Task SeedDefautProjectsAsync(ApplicationDbContext context)
         {
-            //Get project priority Ids
-            int priorityLow = context.ProjectPriorities.FirstOrDefault(p => p.Name == BTProjectPriority.Low.ToString()).Id;
-            int priorityMedium = context.ProjectPriorities.FirstOrDefault(p => p.Name == BTProjectPriority.Medium.ToString()).Id;
-            int priorityImportant = context.ProjectPriorities.FirstOrDefault(p => p.Name == BTProjectPriority.Important.ToString()).Id;
-            int priorityUrgent = context.ProjectPriorities.FirstOrDefault(p => p.Name == BTProjectPriority.Urgent.ToString()).Id;
-            int priorityRequired = context.ProjectPriorities.FirstOrDefault(p => p.Name == BTProjectPriority.Required.ToString()).Id;
+            //Get project priority to enums
+            BTProjectPriority priorityLow = BTProjectPriority.Low;
+            BTProjectPriority priorityMedium = BTProjectPriority.Medium;
+            BTProjectPriority priorityImportant = BTProjectPriority.Important;
+            BTProjectPriority priorityUrgent = BTProjectPriority.Urgent;
+            BTProjectPriority priorityRequired = BTProjectPriority.Required;
 
             try
             {
@@ -173,7 +203,7 @@ namespace TitanTracker.Data
                          Description="Single page html, css & javascript page.  Serves as a landing page for candidates and contains a bio and links to all applications and challenges." ,
                          StartDate = new DateTime(2021,7,06),
                          EndDate = new DateTime(2021,7,06).AddMonths(4),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: Personal Blog -  Web Application
                     new Project()
@@ -183,7 +213,7 @@ namespace TitanTracker.Data
                          Description="Candidate's custom built web application using .Net Core with MVC, a postgres database and hosted in a heroku container.  The app is designed for the candidate to create, update and maintain a live blog site.",
                          StartDate = new DateTime(2021,8,06),
                          EndDate = new DateTime(2021,8,06).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // JS: Issue Tracker
                     new Project()
@@ -193,7 +223,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  The application is a multi tennent application designed to track issue tickets' progress.  Implemented with identity and user roles, Tickets are maintained in projects which are maintained by users in the role of projectmanager.  Each project has a team and team members.",
                          StartDate = new DateTime(2021,8,23),
                          EndDate = new DateTime(2021,8,23).AddMonths(1),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // MVC: Bug Tracker
                     new Project()
@@ -203,7 +233,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  The application is a multi tennent application designed to track issue tickets' progress.  Implemented with identity and user roles, Tickets are maintained in projects which are maintained by users in the role of projectmanager.  Each project has a team and team members.",
                          StartDate = new DateTime(2021,8,23),
                          EndDate = new DateTime(2021,8,23).AddMonths(1),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // JS: Address Book
                     new Project()
@@ -213,7 +243,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  This is an application to serve as a rolodex of contacts for a given user..",
                          StartDate = new DateTime(2021,7,18),
                          EndDate = new DateTime(2021,7,18).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // BootStrap: Invoice Lab
                     new Project()
@@ -223,7 +253,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityLow
+                         ProjectPriority = priorityLow
                      },
                     // MVC: Movie Information Web Application
                     new Project()
@@ -233,7 +263,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                        StartDate = new DateTime(2021,7,24),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: Fizz Buzz
                     new Project()
@@ -243,7 +273,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(5),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: SuperDog
                     new Project()
@@ -253,7 +283,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(3),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: Palidrome
                     new Project()
@@ -263,7 +293,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // JS: Hundo
                     new Project()
@@ -273,7 +303,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: Loan Calculator
                     new Project()
@@ -283,7 +313,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // JS: Sunset Hills
                     new Project()                                         {
@@ -292,7 +322,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityImportant                     },
+                         ProjectPriority = priorityImportant                     },
                     // JS: Hero Search
                     new Project()
                     {
@@ -301,7 +331,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // Bootstrap: Grid Lab
                     new Project()
@@ -311,7 +341,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityLow
+                         ProjectPriority = priorityLow
                      },
                     // MVC: Sum of All Fears  Lab
                     new Project()
@@ -321,7 +351,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // Bootstrap: Carousel & Cards Lab
                     new Project()
@@ -331,7 +361,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // JS: Rewind
                     new Project()
@@ -341,7 +371,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // JS: Contact Form
                     new Project()
@@ -351,7 +381,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // JS: Creating a Template Lab
                     new Project()
@@ -361,7 +391,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // MVC: Address Book
                     new Project()
@@ -371,7 +401,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // C#: Palidrome
                     new Project()
@@ -381,7 +411,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityUrgent
+                         ProjectPriority = priorityUrgent
                      },
                     // C#: Fizz Buzz
                     new Project()
@@ -391,7 +421,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityRequired
+                         ProjectPriority = priorityRequired
                      },
                     // C#: Loan Calculator
                     new Project()
@@ -401,7 +431,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // C#: Dice Roll
                     new Project()
@@ -411,7 +441,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityImportant
+                         ProjectPriority = priorityImportant
                      },
                     // C#: Recursion Lab
                     new Project()
@@ -421,7 +451,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // C#: Array Lab
                     new Project()
@@ -431,7 +461,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // C#: Deck of Cards Lab
                     new Project()
@@ -441,7 +471,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // C#: GradeBook
                     new Project()
@@ -451,7 +481,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // C#: Employee Database
                     new Project()
@@ -461,7 +491,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // JS: Zero Hour
                     new Project()
@@ -471,7 +501,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // JS: Notary
                     new Project()
@@ -481,7 +511,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // MVC: Retail Manager
                     new Project()
@@ -491,7 +521,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
                     // JS: WeatherPro
                     new Project()
@@ -501,7 +531,7 @@ namespace TitanTracker.Data
                          Description="A custom designed .Net Core application with postgres database.  An API based application allows users to input and import movie posters and details including cast and crew information.",
                          StartDate = new DateTime(2021,7,15),
                          EndDate = new DateTime(2021,7,24).AddMonths(2),
-                         ProjectPriorityId = priorityMedium
+                         ProjectPriority = priorityMedium
                      },
 
                     #endregion AlphaCompany1Id

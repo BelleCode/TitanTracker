@@ -17,7 +17,6 @@
     //BTUser developer = await TicketService.GetTicketDeveloperAsync(Model.Id);
 }
 
-<h1>All @company.Name Projects</h1>
 
 <h3>@User.IsInRole(Roles.Admin.ToString())</h3>
 <header class="page-header">
@@ -35,6 +34,106 @@
         <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fas fa-chevron-left"></i></a>
     </div>
 </header>
+
+<!--===== Company Stats  ====-->
+<div class="row">
+    <div class="col-xl-12">
+        @if ((User.IsInRole(Roles.Admin.ToString())) || User.IsInRole(Roles.DemoUser.ToString()) || User.IsInRole(Roles.ProgramManager.ToString()) || User.IsInRole(Roles.ProjectManager.ToString()))
+        {
+            <section class="card">
+                <header class="card-header card-header-dark">
+                    <h2 class="card-title">Project Info</h2>
+                </header>
+                <div class="card-body">
+                    <table class="table table-responsive-md table-hover mb-0" id="ProjectInfo">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Project</th>
+                                <th>Priority</th>
+                                <th>Current State</th>
+                                <th>Completion</th>
+                                <th>Work Items</th>
+                                <th>Tickets</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in Model.Projects)
+                            {
+                                <tr>
+                                    <td>@project.Id</td>
+                                    <td>@project.Name</td>
+                                    <td>
+                                        <select id="@project.Id" class="btn btn-primary btn-xs dropdown-toggle" onchange="changeProjectPriority(this.id, this.value)">
+
+                                            @foreach (var projPri in Enum.GetValues(typeof(BTProjectPriority)))
+                                            {
+                                                <!--To include a dropdown menu create 1 td element, use teh foreach loop to create the option elememt and the if statement to choose the first one-->
+                                                @if (string.Equals(projPri.ToString(), project.ProjectPriority.ToString()))
+                                                {
+                                                    <option selected value="@projPri.ToString()">@projPri.ToString()</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@projPri.ToString()">@projPri.ToString()</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select id="@project.Id" class="btn btn-primary btn-xs dropdown-toggle" onchange="changeProjectStatus(this.id, this.value)">
+
+                                            @foreach (var projStatus in Enum.GetValues(typeof(BTProjectStatus)))
+                                            {
+                                                <!--To include a dropdown menu create 1 td element, use teh foreach loop to create the option elememt and the if statement to choose the first one-->
+                                                @if (string.Equals(projStatus.ToString(), project.ProjectStatus.ToString()))
+                                                {
+                                                    <option selected value="@projStatus.ToString()">@projStatus.ToString()</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@projStatus.ToString()">@projStatus.ToString()</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    @foreach (var projStatus in Enum.GetValues(typeof(BTProjectStatus)))
+                                    {
+                                        <td>
+                                            @if (string.Equals(projStatus.ToString(), project.ProjectStatus.ToString()))
+                                            {
+                                                <input type="radio" checked name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="proj-@project.Id" id="@project.Id" onclick="changeProjectStatus(this.id, this.value)" value="@projStatus" />
+                                            }
+                                        </td>
+                                    }
+                                    <td><span class="badge badge-success">Success</span></td>
+                                    <td>
+                                        <div class="progress progress-sm progress-half-rounded m-0 mt-1 light">
+                                            <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                                100%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="actions-hover actions-fade">
+                                        <a href=""><i class="fas fa-pencil-alt"></i></a>
+                                        <a href="" class="delete-row"><i class="far fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        }
+    </div>
+</div>
+
+<hr />
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -188,3 +287,29 @@
         }
     </tbody>
 </table>
+
+
+
+
+<form id="projectStatusForm" asp-controller="Projects" asp-action="UpdateProjectStatus">
+    <input type="hidden" name="projectId" id="projectId" value="" />
+    <input type="hidden" name="projectStatus" id="projectStatus" value="" />
+</form>
+
+<!-- MAKE SURE TO CHANGE THE JAVASCRIPT TOO custom.js -->
+<form id="projectPriorityForm" asp-controller="Projects" asp-action="UpdateProjectPriority">
+    <input type="hidden" name="projectId" id="priorityprojectId" value="" />
+    <input type="hidden" name="projectPriority" id="projectPriority" value="" />
+</form>
+
+<!-- end: page -->
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $('#StaffInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
+            $('#ProjectInfo').DataTable({ searching: false, pageLength: 5, lengthMenu: [5, 10, 20] });
+        });
+    </script>
+}

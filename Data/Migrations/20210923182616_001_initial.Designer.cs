@@ -10,7 +10,7 @@ using TitanTracker.Data;
 namespace TitanTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210922140232_001_initial")]
+    [Migration("20210923182616_001_initial")]
     partial class _001_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -459,6 +459,21 @@ namespace TitanTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectPriorities");
+                });
+
+            modelBuilder.Entity("TitanTracker.Models.ProjectStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectStatuses");
                 });
 
             modelBuilder.Entity("TitanTracker.Models.Ticket", b =>

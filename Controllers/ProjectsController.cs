@@ -376,7 +376,7 @@ namespace TitanTracker.Controllers
         }
 
         [HttpPost]
-        public async Task UpdateProjectPriority(int projectId, string projectStatus)
+        public async Task UpdateProjectStatus(int projectId, string projectStatus)
         {
             var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
 
@@ -385,6 +385,20 @@ namespace TitanTracker.Controllers
             Enum.TryParse(projectStatus, out newStatus);
 
             project.ProjectStatus = newStatus;
+
+            await _context.SaveChangesAsync();
+        }
+
+        [HttpPost]
+        public async Task UpdateProjectPriority(int projectId, string projectPriority)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+
+            BTProjectPriority newPriority;
+
+            Enum.TryParse(projectPriority, out newPriority);
+
+            project.ProjectPriority = newPriority;
 
             await _context.SaveChangesAsync();
         }

@@ -8,6 +8,9 @@ namespace TitanTracker.Models.Enums
 {
     public enum Roles
     { // nto strings, just values
+        // by default, the first one should be "Unassigned" Role
+        // Unassigned = 0,
+
         [Display(Name = "Administrator")]
         Admin,
 

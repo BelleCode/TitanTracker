@@ -11,7 +11,7 @@ namespace TitanTracker.Models
         // Primary Key
         public int Id { get; set; }
 
-        [DisplayName("Member Name")]
+        [DisplayName("Member Comment")]
         public string Comment { get; set; }
 
         [DisplayName("Comment Date")]

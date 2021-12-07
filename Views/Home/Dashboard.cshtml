@@ -50,7 +50,7 @@
 
 <!--===== 1st Row, Block Widgets: Projects, Tickets ====-->
 
-<div class="row mb-3">
+<div class="row mb-3 ">
     <div class="col-6">
         <div class="row">
             <div class="col-6">
@@ -75,12 +75,12 @@
                                             <span class="text-primary">
                                                 @*(@projects.Where(p => p.ProjectStatus == BTProjectStatus.Ideation).Count())) in planning)*@
                                                 (@Model.Projects.Where(p => p.ProjectStatus switch
-                                   {
-                                       BTProjectStatus.Ideation or
-                                       BTProjectStatus.Requirements or
-                                       BTProjectStatus.InDesign => true,
-                                       _ => false
-                                   }).Count() in planning)
+                                              {
+                                                  BTProjectStatus.Ideation or
+                                                  BTProjectStatus.Requirements or
+                                                  BTProjectStatus.InDesign => true,
+                                                  _ => false
+                                              }).Count() in planning)
                                             </span>
                                         }
                                     </div>
@@ -203,23 +203,25 @@
                 <h2 class="card-title">Tickets Broken Down by Priority</h2>
             </header>
             <div class="card-body">
-                <div id="ChartistOverlappingBarsOnMobile" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
+                <div id="ChartistOverlappingBarsOnMobile" class="ct-chart ct-perfect-fourth ct-golden-section" style="color:white"></div>
 
                 <!-- See: js/examples/examples.charts.js for the example code. -->
             </div>
         </section>
     </div>
 </div>
-<section class="card">
-    <header class="card-header">
-        <h2 class="card-title">Tickets Broken Down by Priority</h2>
-    </header>
-    <div class="card-body">
-        <div id="ChartistOverlappingBarsOnMobile2" class="ct-chart ct-perfect-fourth ct-golden-section"></div>
-
-        <!-- See: js/examples/examples.charts.js for the example code. -->
-    </div>
-</section>
+<hr />
+<div class="row mb-3 ">
+    <section class="card">
+        <header class="card-header">
+            <h2 class="card-title">Tickets Broken Down by Priority 2</h2>
+        </header>
+        <div class="card-body">
+            <div id="ChartistOverlappingBarsOnMobile2" class="ct-chart ct-perfect-fourth ct-golden-section" style="color:white"></div>
+            <!-- See: js/examples/examples.charts.js for the example code. -->
+        </div>
+    </section>
+</div>
 <!--===== 3rd Row Diagrams: Priority Projects, Number of Tickets in Each Project ====-->
 <!--===== 3rd Row, Staff Breakdown: Roles & Members, Staff info and Assignments ====-->
 <hr />

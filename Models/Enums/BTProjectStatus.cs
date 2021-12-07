@@ -11,7 +11,7 @@ namespace TitanTracker.Models.Enums
         Requirements = 1,       // Requirements collection
         InDesign = 2,           // Designing from requirements
         InDevelopment = 3,      // Development
-        InTest = 4,          // testing
+        InTest = 4,             // testing
         DeploymentReady = 5,    // Ready for deployment scheduled
         Live = 6,               // Livesite
         Deprecated = 8,         // Version is no longer supported, have all existing users move to newer version
